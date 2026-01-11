@@ -954,37 +954,23 @@
         <p class="text-sm font-bold text-blue-900 mb-2">💡 Catatan Penting:</p>
         <p class="text-sm text-blue-800">Dalam kehidupan sehari-hari, banyak situasi yang melibatkan komposisi fungsi, seperti perhitungan diskon bertingkat, konversi suhu, atau perhitungan bunga majemuk. Memahami urutan pengerjaan sangat penting untuk mendapatkan hasil yang tepat!</p>
        </div>
-      </section><!-- Tombol Aksi -->
-      <div class="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-300 rounded-xl p-6 mb-6">
-       <div class="text-center mb-4">
-        <h3 class="text-xl font-bold text-green-800 mb-2 flex items-center justify-center gap-2"><span class="text-2xl">✅</span> Selesai Mengerjakan?</h3>
-        <p class="text-sm text-green-700">Pastikan semua jawaban sudah terisi dengan lengkap. Kalian masih bisa mengubah jawaban setelah dikumpulkan.</p>
-       </div><button id="btn-kumpulkan" class="w-full bg-white text-green-700 px-6 py-4 font-bold rounded-lg text-lg hover:bg-green-50 transition-all shadow-md border-2 border-green-300 hover:shadow-lg"> 📤 Kumpulkan </button>
-       <script>
-       <script>
-       document.getElementById("btn-kumpulkan").addEventListener("click", function () {
-			const inputs = document.querySelectorAll(".required-input");
-			let kosong = false;
+	<!-- Tombol Aksi -->
+	<div class="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-300 rounded-xl p-6 mb-6">
+	  <div class="text-center mb-4">
+		<h3 class="text-xl font-bold text-green-800 mb-2">✅ Selesai Mengerjakan?</h3>
+		<p class="text-sm text-green-700">
+		  Pastikan semua jawaban sudah terisi dengan lengkap.
+		</p>
+	  </div>
 
-			inputs.forEach(input => {
-				if (input.value.trim() === "") {
-					kosong = true;
-					input.classList.add("border-red-400");
-				} else {
-					input.classList.remove("border-red-400");
-				}
-			});
-			if (kosong) {
-				alert("⚠️ Masih ada jawaban yang belum diisi!");
-				return;
-			}
-
-			alert("✅ Semua jawaban lengkap. Jawaban berhasil dikumpulkan!");
-		});
-     	</script>
-
-       </script>
-      </div><!-- Daftar Pustaka -->
+	  <!-- TOMBOL -->
+	  <button id="btn-kumpulkan"
+		class="w-full bg-white text-green-700 px-6 py-4 font-bold rounded-lg text-lg
+			   hover:bg-green-50 transition-all shadow-md border-2 border-green-300">
+		📤 Kumpulkan
+	  </button>
+	</div>
+		  </div><!-- Daftar Pustaka -->
       <section class="section-card bg-white rounded-xl shadow-md p-6 mb-6 border-l-4 border-blue-500">
        <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center"><span class="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center mr-3">📚</span> Daftar Pustaka</h2>
        <div class="space-y-3 text-sm text-gray-700">
@@ -1918,35 +1904,109 @@
       }
       
       // Show status and switch mode
-      const statusDiv = document.getElementById('status-dikumpulkan');
-      statusDiv.classList.remove('hidden');
-      document.getElementById('waktu-dikumpulkan').textContent = data.waktu_dikumpulkan 
-        ? new Date(data.waktu_dikumpulkan).toLocaleString('id-ID') 
-        : '-';
-      document.getElementById('status-viewing-message').textContent = 'Data ini dikumpulkan oleh kelompok';
-      
-      currentMode = 'siswa';
-      document.getElementById('mode-pengumpulan-container').classList.add('hidden');
-      document.getElementById('mode-siswa-container').classList.remove('hidden');
-      document.getElementById('btn-toggle-mode').classList.remove('hidden');
-      document.getElementById('btn-toggle-mode').textContent = '◀️ Kembali ke Daftar';
-      
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+	const statusDiv = document.getElementById('status-dikumpulkan');
+	statusDiv.classList.remove('hidden');
+
+	document.getElementById('waktu-dikumpulkan').textContent = data.waktu_dikumpulkan 
+	  ? new Date(data.waktu_dikumpulkan).toLocaleString('id-ID') 
+	  : '-';
+
+	document.getElementById('status-viewing-message').textContent =
+	  'Data ini dikumpulkan oleh kelompok';
+
+	window.scrollTo({ top: 0, behavior: 'smooth' });
     }
     
     // CLEAR FORM
     function clearForm() {
-      document.querySelectorAll('input[type="text"], textarea').forEach(input => {
-        input.value = '';
-      });
-      document.querySelectorAll('input[type="radio"]').forEach(radio => {
-        radio.checked = false;
-      });
+		document.querySelectorAll('input[type="text"], textarea')
+			.forEach(input => input.value = '');
+
+		document.querySelectorAll('input[type="radio"]')
+			.forEach(radio => radio.checked = false);
       
       // Reset diagram
       resetDiagram('kasus1');
       resetDiagram('kasus2');
     }
-  </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9bc1939c10f0fde0',t:'MTc2ODEwNDc1NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+
+document.getElementById('btn-kumpulkan').addEventListener('click', async function () {
+
+  const kelas = document.getElementById('input-kelas').value.trim();
+  const kelompok = document.getElementById('input-kelompok').value.trim();
+  const anggota1 = document.getElementById('input-anggota-1').value.trim();
+
+  if (!kelas || !kelompok || !anggota1) {
+    showToast('Lengkapi identitas kelompok! ⚠️', 'error');
+    return;
+  }
+
+  const submissionData = {
+    kelas,
+    kelompok,
+    anggota1,
+    waktu_dikumpulkan: new Date().toISOString()
+  };
+
+  if (!window.dataSdk) {
+    showToast('Data SDK tidak tersedia ❌', 'error');
+    return;
+  }
+
+  this.disabled = true;
+  this.innerHTML = '⏳ Mengumpulkan...';
+
+  const result = await window.dataSdk.create(submissionData);
+
+  this.disabled = false;
+  this.innerHTML = '📤 Kumpulkan';
+
+  if (result.isOk) {
+    showToast('LKM berhasil dikumpulkan! 🎉', 'success');
+
+    // 🔥 PINDAH KE HALAMAN LIHAT PENGUMPULAN
+    currentMode = 'pengumpulan';
+    document.getElementById('mode-siswa-container').classList.add('hidden');
+    document.getElementById('mode-pengumpulan-container').classList.remove('hidden');
+    document.getElementById('btn-toggle-mode').classList.add('hidden');
+
+    renderDaftarKelompok();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else {
+    showToast('Gagal mengumpulkan! ❌', 'error');
+  }
+});
+</script>
+
+<script>
+(function(){
+  function c(){
+    var b=a.contentDocument||a.contentWindow.document;
+    if(b){
+      var d=b.createElement('script');
+      d.innerHTML="window.__CF$cv$params={r:'9bc1939c10f0fde0',t:'MTc2ODEwNDc1NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";
+      b.getElementsByTagName('head')[0].appendChild(d)
+    }
+  }
+  if(document.body){
+    var a=document.createElement('iframe');
+    a.height=1;a.width=1;
+    a.style.position='absolute';
+    a.style.top=0;a.style.left=0;
+    a.style.border='none';
+    a.style.visibility='hidden';
+    document.body.appendChild(a);
+    if('loading'!==document.readyState)c();
+    else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);
+    else{
+      var e=document.onreadystatechange||function(){};
+      document.onreadystatechange=function(b){
+        e(b);
+        'loading'!==document.readyState&&(document.onreadystatechange=e,c())
+      }
+    }
+  }
+})();
+</script>
+</body>
 </html>
