@@ -1,0 +1,1876 @@
+<!doctype html>
+<html lang="id" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LKM Komposisi Fungsi Interaktif</title>
+  <script src="/_sdk/data_sdk.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      box-sizing: border-box;
+    }
+    
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+    
+    * {
+      font-family: 'Poppins', sans-serif;
+    }
+    
+    .gradient-bg {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .input-field {
+      transition: all 0.3s ease;
+    }
+    
+    .input-field:focus {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+    
+    .section-card {
+      transition: all 0.3s ease;
+    }
+    
+    .section-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      transition: all 0.3s ease;
+    }
+    
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+    
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    
+    .btn-secondary {
+      transition: all 0.3s ease;
+    }
+    
+    .btn-secondary:hover {
+      transform: translateY(-2px);
+    }
+    
+    .progress-bar {
+      transition: width 0.5s ease;
+    }
+    
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+    
+    .badge {
+      animation: fadeIn 0.5s ease;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+      animation: slideIn 0.3s ease;
+      min-width: 300px;
+    }
+    
+    @keyframes slideIn {
+      from { transform: translateX(400px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    @keyframes slideOut {
+      from { transform: translateX(0); opacity: 1; }
+      to { transform: translateX(400px); opacity: 0; }
+    }
+
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      max-width: 500px;
+      width: 90%;
+      animation: scaleIn 0.3s ease;
+    }
+
+    @keyframes scaleIn {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .kelompok-item {
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .kelompok-item:hover {
+      transform: translateX(5px);
+    }
+
+    .kelompok-item.active {
+      background-color: #e0e7ff;
+      border-left: 4px solid #6366f1;
+    }
+
+    .diagram-interactive-container {
+      background: white;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 10px;
+      margin: 10px 0;
+    }
+
+    .quick-math-symbols {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+
+    .quick-symbol-btn {
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      color: white;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 4px rgba(99, 102, 241, 0.3);
+    }
+
+    .quick-symbol-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(99, 102, 241, 0.4);
+    }
+
+    .quick-symbol-btn:active {
+      transform: scale(0.95);
+    }
+
+    .input-with-symbols {
+      position: relative;
+    }
+
+    .field-error {
+      border-color: #ef4444 !important;
+      border-width: 2px;
+    }
+
+    .password-error {
+      animation: shake 0.5s ease;
+      border-color: #ef4444 !important;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-10px); }
+      75% { transform: translateX(10px); }
+    }
+
+    .drag-item {
+      user-select: none;
+      cursor: grab;
+      transition: all 0.2s ease;
+    }
+
+    .drag-item:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.5);
+    }
+
+    .drag-item:active {
+      cursor: grabbing;
+      transform: scale(0.98);
+    }
+
+    .drag-item.dragging {
+      opacity: 0.5;
+      transform: scale(1.1);
+      cursor: grabbing;
+    }
+
+    .drag-item.selected {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+      border-color: #10b981;
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
+    }
+
+    .drop-zone-svg {
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .drop-zone-svg.selected {
+      filter: drop-shadow(0 0 12px #f59e0b);
+      animation: pulse 1s infinite;
+    }
+
+    .drop-zone-svg.drop-hover {
+      filter: drop-shadow(0 0 16px #10b981);
+      transform: scale(1.1);
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+
+    @keyframes successPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .success-animation {
+      animation: successPulse 0.5s ease;
+    }
+
+    .drop-zone-active {
+      background-color: rgba(16, 185, 129, 0.1);
+      border-color: #10b981 !important;
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+ </head>
+ <body class="h-full bg-gray-50">
+  <div class="h-full w-full overflow-auto">
+   <main class="w-full min-h-full"><button id="btn-toggle-mode" class="fixed top-4 right-4 z-50 bg-indigo-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-indigo-700 transition-all font-semibold text-sm"> 👁️ Lihat Pengumpulan </button> <!-- Toast Container -->
+    <div id="toast-container" class="fixed top-20 right-4 z-50 space-y-2"></div><!-- Modal Verifikasi Hapus -->
+    <div id="modal-verifikasi-hapus" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+     <div class="bg-white rounded-xl shadow-2xl p-6 max-w-md w-full mx-4">
+      <h3 class="text-xl font-bold text-red-800 mb-4">⚠️ Konfirmasi Hapus Data</h3>
+      <p class="text-gray-700 mb-2">Anda akan menghapus data kelompok:</p>
+      <p class="font-bold text-lg text-gray-900 mb-4" id="hapus-kelompok-nama"></p>
+      </p><input type="text" id="input-kode-hapus" class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-red-500 focus:outline-none mb-4" placeholder="Ketik guru8899">
+      <div class="flex gap-3"><button id="btn-batal-hapus" class="flex-1 bg-gray-300 text-gray-800 px-4 py-2 rounded-lg font-semibold hover:bg-gray-400 transition-all"> Batal </button> <button id="btn-konfirmasi-hapus" class="flex-1 bg-red-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-700 transition-all" disabled> 🗑️ Hapus </button>
+      </div>
+     </div>
+    </div><!-- Mode Pengumpulan -->
+    <div id="mode-pengumpulan-container" class="hidden">
+     <div class="gradient-bg text-white py-6 px-6 shadow-lg">
+      <div class="max-w-6xl mx-auto">
+       <h1 class="text-3xl font-bold mb-2">📋 Pengumpulan Jawaban LKM - Komposisi Fungsi</h1>
+       <p class="text-lg opacity-90">Klik nama kelompok untuk melihat hasil pengerjaan</p>
+      </div>
+     </div>
+     <div class="max-w-6xl mx-auto px-6 py-8">
+      <div class="bg-white rounded-xl shadow-md p-6 mb-6">
+       <div class="flex items-center justify-between mb-6">
+        <h2 class="text-xl font-bold text-gray-800">👥 Daftar Kelompok</h2>
+        <div class="text-sm text-gray-600"><span class="font-semibold text-green-600" id="total-dikumpulkan">0</span> / <span class="font-semibold" id="total-kelompok">0</span> Kelompok Sudah Mengumpulkan
+        </div>
+       </div>
+       <div class="mb-4"><label class="block text-sm font-semibold text-gray-700 mb-2" for="filter-kelas">Filter berdasarkan Kelas:</label> <select id="filter-kelas" class="px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-purple-500 focus:outline-none"> <option value="">Semua Kelas</option> </select>
+       </div>
+       <div id="daftar-kelompok" class="space-y-3"></div>
+       <div id="empty-state" class="text-center py-12 text-gray-500">
+        <div class="text-6xl mb-4">
+         📭
+        </div>
+        <p class="text-lg font-semibold">Belum ada kelompok yang mengumpulkan</p>
+        <p class="text-sm">Data akan muncul setelah siswa klik "Kumpulkan"</p>
+       </div>
+      </div><button id="btn-kembali-ke-lkm" class="btn-primary w-full px-6 py-3 text-white font-semibold rounded-lg"> 📝 Kembali ke LKM </button>
+     </div>
+    </div><!-- Mode Siswa -->
+    <div id="mode-siswa-container">
+     <header class="gradient-bg text-white py-8 px-6 shadow-lg">
+      <div class="max-w-4xl mx-auto">
+       <div class="flex items-center justify-between mb-4">
+        <div>
+         <h1 id="judul-header" class="text-3xl font-bold mb-2">Lembar Kerja Murid Pertemuan 2: Komposisi Fungsi</h1>
+         <p id="subjudul-header" class="text-lg opacity-90 mb-3">Memahami Konsep Komposisi Fungsi dan Sifat-Sifatnya</p>
+         <div class="bg-white bg-opacity-20 rounded-lg px-4 py-2 inline-block">
+          <p id="tahun-pelajaran-header" class="text-sm font-semibold">Tahun Pelajaran 2025/2026</p>
+         </div>
+        </div>
+        <div class="bg-white bg-opacity-20 rounded-lg px-4 py-2 text-center">
+         <div class="text-sm opacity-90">
+          Fase F
+         </div>
+         <div class="text-2xl font-bold">
+          XI
+         </div>
+        </div>
+       </div>
+       <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6 text-sm">
+        <div class="bg-white bg-opacity-20 rounded-lg p-3">
+         <div class="opacity-90">
+          Mata Pelajaran
+         </div>
+         <div class="font-semibold">
+          Matematika
+         </div>
+        </div>
+        <div class="bg-white bg-opacity-20 rounded-lg p-3">
+         <div class="opacity-90">
+          Sub Materi
+         </div>
+         <div class="font-semibold">
+          Komposisi Fungsi
+         </div>
+        </div>
+        <div class="bg-white bg-opacity-20 rounded-lg p-3">
+         <div class="opacity-90">
+          Alokasi Waktu
+         </div>
+         <div class="font-semibold">
+          30 menit
+         </div>
+        </div>
+        <div class="bg-white bg-opacity-20 rounded-lg p-3">
+         <div class="opacity-90">
+          Disusun oleh
+         </div>
+         <div id="penyusun-header" class="font-semibold">
+          Ratna Wahyuningtyas
+         </div>
+        </div>
+       </div>
+      </div>
+     </header>
+     <div class="max-w-4xl mx-auto px-6 py-8">
+      <div id="status-dikumpulkan" class="hidden bg-green-50 border-2 border-green-500 rounded-xl p-6 mb-6 text-center">
+       <div class="text-4xl mb-3">
+        ✅
+       </div>
+       <h3 class="text-xl font-bold text-green-800 mb-2">LKM Sudah Dikumpulkan!</h3>
+       <p class="text-green-700 mb-2">Dikumpulkan pada: <span id="waktu-dikumpulkan" class="font-semibold"></span></p>
+       <p class="text-sm text-green-600" id="status-viewing-message">Anda masih dapat melihat dan mengedit jawaban</p>
+      </div><!-- Tujuan Pembelajaran -->
+      <section class="section-card bg-white rounded-xl shadow-md p-6 mb-6">
+       <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center"><span class="bg-purple-100 text-purple-600 rounded-full w-8 h-8 flex items-center justify-center mr-3">🎯</span> Tujuan Pembelajaran</h2>
+       <p class="text-gray-700 mb-3">Melalui model pembelajaran Preprospec berbantuan KOMI-STUDYLAB (<em>Condition</em>), murid (<em>Audience</em>) diharapkan mampu:</p>
+       <ol class="list-decimal list-inside space-y-2 text-gray-700">
+        <li>menjelaskan konsep komposisi fungsi dengan menyusun notasi komposisi fungsi secara matematis (<em>Behavior</em>) secara tepat dan logis (<em>Degree</em>);</li>
+        <li>menganalisis sifat-sifat komposisi fungsi, termasuk pengaruh urutan penerapan fungsi, melalui penyelesaian soal kontekstual (<em>Behavior</em>) dengan benar (<em>Degree</em>).</li>
+       </ol>
+      </section><!-- Identitas Peserta Didik -->
+      <section class="section-card bg-white rounded-xl shadow-md p-6 mb-6">
+       <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center"><span class="bg-blue-100 text-blue-600 rounded-full w-8 h-8 flex items-center justify-center mr-3">👥</span> Identitas Peserta Didik</h2>
+       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div><label for="input-kelas" class="block text-sm font-semibold text-gray-700 mb-2">Kelas *</label> <input type="text" id="input-kelas" placeholder="Contoh: XI-1" class="input-field w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-purple-500 focus:outline-none">
+        </div>
+        <div><label for="input-kelompok" class="block text-sm font-semibold text-gray-700 mb-2">Kelompok *</label> <input type="text" id="input-kelompok" placeholder="Contoh: Kelompok 1" class="input-field w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-purple-500 focus:outline-none">
+        </div>
+       </div><label class="block text-sm font-semibold text-gray-700 mb-2">Nama Anggota Kelompok</label>
+       <div class="space-y-2"><input type="text" id="input-anggota-1" placeholder="1. Nama dan No. Absen" class="input-field w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-purple-500 focus:outline-none"> <input type="text" id="input-anggota-2" placeholder="2. Nama dan No. Absen" class="input-field w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-purple-500 focus:outline-none"> <input type="text" id="input-anggota-3" placeholder="3. Nama dan No. Absen" class="input-field w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-purple-500 focus:outline-none"> <input type="text" id="input-anggota-4" placeholder="4. Nama dan No. Absen" class="input-field w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-purple-500 focus:outline-none"> <input type="text" id="input-anggota-5" placeholder="5. Nama dan No. Absen" class="input-field w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-purple-500 focus:outline-none">
+       </div>
+      </section><!-- Kegiatan 1 -->
+      <section class="section-card bg-white rounded-xl shadow-md p-6 mb-6 border-l-4 border-purple-500">
+       <div class="flex items-center justify-between mb-4">
+        <h2 class="text-xl font-bold text-gray-800 flex items-center"><span class="bg-purple-500 text-white rounded-full w-8 h-8 flex items-center justify-center mr-3 text-sm">1</span> KEGIATAN 1: KOMPOSISI FUNGSI &amp; PERHITUNGAN</h2><span class="badge bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm font-semibold">⏱️ 20 menit</span>
+       </div>
+       <div class="bg-gradient-to-r from-yellow-50 to-orange-50 border-l-4 border-yellow-400 p-4 mb-4 rounded-r-lg shadow-sm">
+        <h3 class="font-bold text-base text-gray-800 mb-3">🛍️ PERMASALAHAN: Promo Spesial di Toko Pakaian</h3>
+        <p class="text-sm text-gray-800 leading-relaxed mb-3">Di sebuah pusat belanja, ada promo besar di toko pakaian. Tersedia dua promo menarik yaitu diskon 10% dan potongan Rp10.000. Misalkan <span class="font-bold text-lg">x</span> adalah <strong>harga awal baju sebelum mendapat promo</strong> (dalam Rupiah), maka:</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+         <div class="bg-white rounded-lg p-3 border-2 border-red-300">
+          <div class="flex items-center gap-2 mb-2"><span class="bg-red-500 text-white px-2 py-1 rounded-full font-bold text-xs">f</span> <span class="font-bold text-sm text-gray-800">Diskon 10%</span>
+          </div>
+          <p class="text-sm text-gray-700 mb-3">Harga dikurangi 10%</p>
+          <div>
+           <div class="flex items-center gap-2 mb-2"><label for="fungsi-f" class="text-sm font-semibold text-gray-700 whitespace-nowrap">f(x) =</label> <input type="text" id="fungsi-f" class="input-field math-input flex-1 px-3 py-2 text-sm border-2 border-red-300 rounded-lg focus:border-red-500 focus:outline-none bg-red-50" placeholder="Tuliskan fungsi f(x)...">
+           </div>
+          </div>
+         </div>
+         <div class="bg-white rounded-lg p-3 border-2 border-green-300">
+          <div class="flex items-center gap-2 mb-2"><span class="bg-green-500 text-white px-2 py-1 rounded-full font-bold text-xs">g</span> <span class="font-bold text-sm text-gray-800">Potongan Rp10.000</span>
+          </div>
+          <p class="text-sm text-gray-700 mb-3">Harga dipotong Rp10.000</p>
+          <div>
+           <div class="flex items-center gap-2 mb-2"><label for="fungsi-g" class="text-sm font-semibold text-gray-700 whitespace-nowrap">g(x) =</label> <input type="text" id="fungsi-g" class="input-field math-input flex-1 px-3 py-2 text-sm border-2 border-green-300 rounded-lg focus:border-green-500 focus:outline-none bg-green-50" placeholder="Tuliskan fungsi g(x)...">
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="bg-orange-100 border-l-4 border-orange-500 p-3 rounded">
+         <p class="font-bold text-sm text-orange-800 mb-2">💭 Pertanyaan:</p>
+         <ol class="list-decimal list-inside text-sm text-orange-900 space-y-2 ml-2">
+          <li>Menurutmu, apakah urutan penggunaan promo mempengaruhi harga akhir?</li>
+          <li>Jika kamu membeli baju seharga Rp85.000, urutan promo manakah yang akan kamu pilih? 
+           <div class="ml-6 mt-1 space-y-1">
+            <p><strong>a.</strong> diskon 10% kemudian potongan Rp10.000,</p>
+            <p><strong>b.</strong> potongan Rp10.000 kemudian diskon 10%?</p>
+           </div></li>
+         </ol>
+        </div>
+       </div>
+       <div class="bg-blue-50 border-l-4 border-blue-400 p-3 mb-4 rounded text-sm">
+        <p class="text-blue-800">📊 <strong>Urutan penggunaan promo dapat dimodelkan menggunakan komposisi fungsi.</strong> Perhatikan diagram berikut, kemudian susun langkahnya dengan benar.</p>
+       </div><!-- Diagram Kasus 1 -->
+       <div class="mb-6">
+        <div class="diagram-interactive-container">
+         <h4 class="font-bold text-xs text-purple-800 mb-1 text-center">🟣 KASUS 1: Diskon → Potongan</h4>
+         <p class="text-xs text-gray-600 text-center mb-3">🎯 Seret elemen ke kotak [ ? ] di diagram!</p>
+         <svg viewbox="0 0 900 600" preserveaspectratio="xMidYMid meet" style="width: 100%; height: auto;"><!-- Curved arrow for composition formula --> <path d="M 140 370 Q 450 480 760 370" fill="none" stroke="#8b5cf6" stroke-width="3" stroke-dasharray="10,6" marker-end="url(#arrowhead-curved-kasus1)" /> <!-- Drop zone for formula (bottom curved arrow) --> <text id="drop-formula-kasus1" class="drop-zone-svg" data-group="kasus1" x="450" y="505" text-anchor="middle" font-size="22" font-weight="600" fill="#9ca3af" style="cursor: pointer;">
+           [ Letakkan formula di sini ]
+          </text> <!-- First arrow (A to B) --> <path d="M 210 260 Q 275 245 340 260" fill="none" stroke="#6366f1" stroke-width="3" marker-end="url(#arrowhead-kasus1)" /> <text x="275" y="235" text-anchor="middle" font-size="26" font-weight="600" fill="#1e3a8a">
+           f
+          </text> <!-- Second arrow (B to C) with drop zone --> <path d="M 510 260 Q 587 245 665 260" fill="none" stroke="#6366f1" stroke-width="3" marker-end="url(#arrowhead2-kasus1)" /> <text id="drop-panah-kasus1" class="drop-zone-svg" data-group="kasus1" x="587" y="245" text-anchor="middle" font-size="26" font-weight="600" fill="#9ca3af" style="cursor: pointer;">
+           [ ? ]
+          </text> <!-- Set A (red) --> <ellipse cx="140" cy="260" rx="70" ry="95" fill="none" stroke="#ef4444" stroke-width="3" /> <text x="140" y="130" text-anchor="middle" font-size="32" font-weight="600" fill="#1e3a8a">
+           A
+          </text> <text x="140" y="270" text-anchor="middle" font-size="28" font-style="italic" fill="#374151">
+           x
+          </text> <!-- Set B (blue) with drop zone --> <ellipse cx="425" cy="260" rx="85" ry="95" fill="none" stroke="#3b82f6" stroke-width="3" /> <text x="425" y="130" text-anchor="middle" font-size="32" font-weight="600" fill="#1e3a8a">
+           B
+          </text> <text id="drop-b-kasus1" class="drop-zone-svg" data-group="kasus1" x="425" y="270" text-anchor="middle" font-size="26" font-style="italic" fill="#9ca3af" style="cursor: pointer;">
+           [ ? ]
+          </text> <!-- Set C (green) with drop zone --> <ellipse cx="760" cy="260" rx="95" ry="95" fill="none" stroke="#10b981" stroke-width="3" /> <text x="760" y="130" text-anchor="middle" font-size="32" font-weight="600" fill="#1e3a8a">
+           C
+          </text> <text id="drop-c-kasus1" class="drop-zone-svg" data-group="kasus1" x="760" y="270" text-anchor="middle" font-size="28" font-style="italic" fill="#9ca3af" style="cursor: pointer;">
+           [ ? ]
+          </text> <!-- Arrow markers --> <defs>
+           <marker id="arrowhead-kasus1" markerwidth="10" markerheight="10" refx="9" refy="3" orient="auto">
+            <polygon points="0 0, 10 3, 0 6" fill="#6366f1" />
+           </marker>
+           <marker id="arrowhead2-kasus1" markerwidth="10" markerheight="10" refx="9" refy="3" orient="auto">
+            <polygon points="0 0, 10 3, 0 6" fill="#6366f1" />
+           </marker>
+           <marker id="arrowhead-curved-kasus1" markerwidth="10" markerheight="10" refx="9" refy="3" orient="auto">
+            <polygon points="0 0, 10 3, 0 6" fill="#8b5cf6" />
+           </marker>
+          </defs>
+         </svg>
+         <div class="mt-4 p-3 bg-purple-50 rounded-lg border-2 border-purple-200">
+          <p class="text-xs font-semibold text-purple-800 mb-2">📦 Bank Elemen - Seret ke diagram:</p>
+          <div class="flex flex-wrap gap-2">
+           <div class="drag-item px-3 py-2 bg-white border-2 border-purple-300 rounded-lg text-sm font-semibold hover:bg-purple-100 transition-all" draggable="true" data-value="f(x)" data-group="kasus1">
+            f(x)
+           </div>
+           <div class="drag-item px-3 py-2 bg-white border-2 border-purple-300 rounded-lg text-sm font-semibold hover:bg-purple-100 transition-all" draggable="true" data-value="g" data-group="kasus1">
+            g
+           </div>
+           <div class="drag-item px-3 py-2 bg-white border-2 border-purple-300 rounded-lg text-sm font-semibold hover:bg-purple-100 transition-all" draggable="true" data-value="g(f(x))" data-group="kasus1">
+            g(f(x))
+           </div>
+           <div class="drag-item px-3 py-2 bg-white border-2 border-purple-300 rounded-lg text-sm font-semibold hover:bg-purple-100 transition-all" draggable="true" data-value="(g ∘ f)(x) = g(f(x))" data-group="kasus1">
+            (g ∘ f)(x) = g(f(x))
+           </div>
+          </div><button id="reset-kasus1" class="mt-2 w-full bg-red-500 text-white px-3 py-2 rounded-lg text-xs font-semibold hover:bg-red-600 transition-all">🔄 Reset Diagram</button>
+         </div>
+        </div>
+        <div class="bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-blue-300 rounded-lg p-4 mt-4 mb-4">
+         <h3 class="font-bold text-base text-blue-800 mb-2 flex items-center"><span class="text-xl mr-2">🔍</span> AYO BEREKSPLORASI - Mencari Rumus Umum!</h3>
+         <p class="text-sm text-gray-800 leading-relaxed">Setelah mengamati diagram, sekarang temukan rumus umumnya! Tulis fungsi yang sesuai, tentukan apa yang ditanyakan, lalu substitusikan untuk menemukan rumus umum. <span class="font-semibold text-blue-700">Mari kita buktikan dengan rumus matematis! 💡</span></p>
+        </div>
+        <div class="bg-purple-50 border-2 border-purple-300 rounded-lg p-4">
+         <h3 class="font-bold text-base text-purple-800 mb-3">📝 KASUS 1: Mencari Rumus Umum</h3>
+         <div class="bg-white rounded-lg p-3 border border-purple-200 shadow-sm">
+          <div class="space-y-3">
+           <div class="mb-3">
+            <p class="text-sm font-bold text-gray-800 mb-2">📝 Diketahui:</p>
+            <div class="bg-purple-50 border-2 border-purple-200 rounded-lg p-3">
+             <div class="mb-2"><input type="text" id="kasus1-f-kotak1" class="input-field math-input kasus1-diketahui-input w-full px-3 py-2 text-sm border-2 border-purple-300 rounded-lg focus:border-purple-500 focus:outline-none" placeholder="f(x) = ...">
+             </div>
+             <div class="mb-3"><input type="text" id="kasus1-g-kotak1" class="input-field math-input kasus1-diketahui-input w-full px-3 py-2 text-sm border-2 border-purple-300 rounded-lg focus:border-purple-500 focus:outline-none" placeholder="g(x) = ...">
+             </div>
+             <div class="quick-math-symbols"><button type="button" class="quick-symbol-btn" data-symbol="(">(</button> <button type="button" class="quick-symbol-btn" data-symbol=")">)</button> <button type="button" class="quick-symbol-btn" data-symbol="=">=</button> <button type="button" class="quick-symbol-btn" data-symbol="−">−</button> <button type="button" class="quick-symbol-btn" data-symbol="+">+</button> <button type="button" class="quick-symbol-btn" data-symbol="∘">∘</button>
+             </div>
+            </div>
+           </div>
+           <div class="mb-3">
+            <p class="text-sm font-bold text-gray-800 mb-2">❓ Ditanya:</p>
+            <div class="bg-purple-50 border-2 border-purple-200 rounded-lg p-3"><input type="text" id="kasus1-ditanya" class="input-field math-input w-full px-3 py-2 text-sm border-2 border-purple-300 rounded-lg focus:border-purple-500 focus:outline-none" placeholder="...">
+             <div class="quick-math-symbols"><button type="button" class="quick-symbol-btn" data-symbol="(">(</button> <button type="button" class="quick-symbol-btn" data-symbol=")">)</button> <button type="button" class="quick-symbol-btn" data-symbol="=">=</button> <button type="button" class="quick-symbol-btn" data-symbol="g">g</button> <button type="button" class="quick-symbol-btn" data-symbol="f">f</button> <button type="button" class="quick-symbol-btn" data-symbol="∘">∘</button> <button type="button" class="quick-symbol-btn" data-symbol="x">x</button>
+             </div>
+            </div>
+           </div>
+           <div>
+            <p class="text-sm font-bold text-gray-800 mb-2">✍️ Jawab:</p>
+            <div class="bg-purple-50 border-2 border-purple-200 rounded-lg p-3 space-y-2">
+             <div class="flex items-center gap-2 flex-wrap"><span class="text-sm font-semibold text-gray-700">(g ∘ f)(x) =</span> <input type="text" id="kasus1-jawab-a1" class="input-field math-input px-3 py-2 text-sm border-2 border-purple-300 rounded-lg focus:border-purple-500 focus:outline-none" placeholder="..." style="width: 80px;"> <span class="text-sm text-gray-700">(</span> <input type="text" id="kasus1-jawab-a2" class="input-field math-input px-3 py-2 text-sm border-2 border-purple-300 rounded-lg focus:border-purple-500 focus:outline-none" placeholder="..." style="width: 80px;"> <span class="text-sm text-gray-700">(</span> <input type="text" id="kasus1-jawab-a3" class="input-field math-input px-3 py-2 text-sm border-2 border-purple-300 rounded-lg focus:border-purple-500 focus:outline-none" placeholder="..." style="width: 80px;"> <span class="text-sm text-gray-700">))</span>
+             </div>
+             <div class="flex items-center gap-2 flex-wrap"><span class="text-sm font-semibold text-gray-700 ml-8">=</span> <input type="text" id="kasus1-jawab-b1k1" class="input-field math-input px-3 py-2 text-sm border-2 border-purple-300 rounded-lg focus:border-purple-500 focus:outline-none" placeholder="..." style="width: 80px;"> <span class="text-sm text-gray-700">(</span> <input type="text" id="kasus1-jawab-b1k2" class="input-field math-input px-3 py-2 text-sm border-2 border-purple-300 rounded-lg focus:border-purple-500 focus:outline-none" placeholder="..." style="width: 100px;"> <span class="text-sm text-gray-700">)</span>
+             </div>
+             <div class="flex items-center gap-2 flex-wrap"><span class="text-sm font-semibold text-gray-700 ml-8">=</span> <input type="text" id="kasus1-jawab-b2k1" class="input-field math-input px-3 py-2 text-sm border-2 border-purple-300 rounded-lg focus:border-purple-500 focus:outline-none" placeholder="..." style="width: 150px;">
+             </div>
+             <div class="quick-math-symbols"><button type="button" class="quick-symbol-btn" data-symbol="(">(</button> <button type="button" class="quick-symbol-btn" data-symbol=")">)</button> <button type="button" class="quick-symbol-btn" data-symbol="=">=</button> <button type="button" class="quick-symbol-btn" data-symbol="−">−</button> <button type="button" class="quick-symbol-btn" data-symbol="+">+</button> <button type="button" class="quick-symbol-btn" data-symbol="×">×</button> <button type="button" class="quick-symbol-btn" data-symbol="x">x</button> <button type="button" class="quick-symbol-btn" data-symbol="g">g</button> <button type="button" class="quick-symbol-btn" data-symbol="f">f</button> <button type="button" class="quick-symbol-btn" data-symbol="0,9">0,9</button>
+             </div>
+            </div>
+           </div>
+           <div>
+            <div class="flex items-center gap-3 mb-2"><label for="kasus1-jadi" class="text-sm font-semibold text-gray-700 whitespace-nowrap">✅ Jadi,</label> <input type="text" id="kasus1-jadi" class="input-field math-input flex-1 px-3 py-2 text-sm border-2 border-green-400 rounded-lg focus:border-green-600 focus:outline-none bg-green-50" placeholder="rumus umumnya...">
+            </div>
+            <div class="quick-math-symbols"><button type="button" class="quick-symbol-btn" data-symbol="(">(</button> <button type="button" class="quick-symbol-btn" data-symbol=")">)</button> <button type="button" class="quick-symbol-btn" data-symbol="∘">∘</button> <button type="button" class="quick-symbol-btn" data-symbol="−">−</button> <button type="button" class="quick-symbol-btn" data-symbol="=">=</button> <button type="button" class="quick-symbol-btn" data-symbol="x">x</button>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div><!-- Perhitungan Harga Kasus 1 -->
+        <div class="bg-gradient-to-r from-green-50 to-teal-50 border-2 border-green-300 rounded-lg p-4 mt-4">
+         <h4 class="font-bold text-base text-green-800 mb-3 flex items-center"><span class="text-xl mr-2">🧮</span> PERHITUNGAN HARGA (x = Rp85.000)</h4>
+         <p class="text-xs text-gray-700 mb-3">Gunakan rumus yang sudah kalian temukan untuk menghitung harga akhir!</p>
+         <div class="bg-white rounded-lg p-4 border-2 border-purple-200">
+          <div class="space-y-4">
+           <div class="bg-blue-50 border-l-4 border-blue-400 p-3 rounded text-xs">
+            <p class="font-semibold text-blue-800 mb-1">💡 Panduan:</p>
+            <p class="text-blue-700">Isi setiap kotak dengan lengkap, ikuti pola perhitungan!</p>
+           </div>
+           <div class="bg-purple-50 border-2 border-purple-200 rounded-lg p-3">
+            <div class="flex items-center gap-2 flex-wrap"><span class="text-sm font-semibold text-gray-700">(g ∘ f)(x) =</span> <input type="text" id="hitung1-rumus-kotak1" class="input-field math-input px-2 py-1 text-sm border-2 border-purple-300 rounded focus:border-purple-500 focus:outline-none" placeholder="..." style="width: 70px;"> <span class="text-sm text-gray-700">(</span> <input type="text" id="hitung1-rumus-kotak2" class="input-field math-input px-2 py-1 text-sm border-2 border-purple-300 rounded focus:border-purple-500 focus:outline-none" placeholder="..." style="width: 70px;"> <span class="text-sm text-gray-700">) −</span> <input type="text" id="hitung1-rumus-kotak3" class="input-field math-input px-2 py-1 text-sm border-2 border-purple-300 rounded focus:border-purple-500 focus:outline-none" placeholder="..." style="width: 90px;">
+            </div>
+           </div>
+           <div class="bg-purple-50 border-2 border-purple-200 rounded-lg p-3">
+            <div class="flex items-center gap-2 flex-wrap"><span class="text-sm font-semibold text-gray-700">(g ∘ f)(85000) =</span> <input type="text" id="hitung1-baris1-kotak1" class="input-field math-input px-2 py-1 text-sm border-2 border-purple-300 rounded focus:border-purple-500 focus:outline-none" placeholder="..." style="width: 70px;"> <span class="text-sm text-gray-700">(</span> <input type="text" id="hitung1-baris1-kotak2" class="input-field math-input px-2 py-1 text-sm border-2 border-purple-300 rounded focus:border-purple-500 focus:outline-none" placeholder="..." style="width: 90px;"> <span class="text-sm text-gray-700">) −</span> <input type="text" id="hitung1-baris1-kotak3" class="input-field math-input px-2 py-1 text-sm border-2 border-purple-300 rounded focus:border-purple-500 focus:outline-none" placeholder="..." style="width: 90px;">
+            </div>
+           </div>
+           <div class="bg-purple-50 border-2 border-purple-200 rounded-lg p-3">
+            <div class="flex items-center gap-2 flex-wrap"><span class="text-sm font-semibold text-gray-700 ml-12">=</span> <input type="text" id="hitung1-baris2-kotak1" class="input-field math-input px-2 py-1 text-sm border-2 border-purple-300 rounded focus:border-purple-500 focus:outline-none" placeholder="..." style="width: 90px;"> <span class="text-sm text-gray-700">−</span> <input type="text" id="hitung1-baris2-kotak2" class="input-field math-input px-2 py-1 text-sm border-2 border-purple-300 rounded focus:border-purple-500 focus:outline-none" placeholder="..." style="width: 90px;">
+            </div>
+           </div>
+           <div class="bg-purple-50 border-2 border-purple-200 rounded-lg p-3">
+            <div class="flex items-center gap-2 flex-wrap"><span class="text-sm font-semibold text-gray-700 ml-12">=</span> <span class="text-sm text-gray-700">Rp</span> <input type="text" id="hitung1-baris3-hasil" class="input-field math-input px-3 py-2 text-sm border-2 border-purple-300 rounded-lg focus:border-purple-500 focus:outline-none" placeholder="..." style="width: 120px;">
+            </div>
+           </div>
+           <div class="bg-gradient-to-r from-green-100 to-emerald-100 border-2 border-green-500 rounded-lg p-3">
+            <div class="flex items-center gap-3 mb-2"><label for="hitung1-hasil" class="text-sm font-semibold text-gray-700 whitespace-nowrap">✅ Jadi,</label> <input type="text" id="hitung1-hasil" class="input-field math-input flex-1 px-3 py-2 text-base font-bold border-2 border-green-500 rounded-lg focus:border-green-600 focus:outline-none bg-white" placeholder="...">
+            </div>
+            <div class="quick-math-symbols"><button type="button" class="quick-symbol-btn" data-symbol="(">(</button> <button type="button" class="quick-symbol-btn" data-symbol=")">)</button> <button type="button" class="quick-symbol-btn" data-symbol="=">=</button> <button type="button" class="quick-symbol-btn" data-symbol="−">−</button> <button type="button" class="quick-symbol-btn" data-symbol="+">+</button> <button type="button" class="quick-symbol-btn" data-symbol="∘">∘</button>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div><!-- Diagram Kasus 2 -->
+       <div class="mb-6">
+        <div class="diagram-interactive-container">
+         <h4 class="font-bold text-xs text-blue-800 mb-1 text-center">🔵 KASUS 2: Potongan → Diskon</h4>
+         <p class="text-xs text-gray-600 text-center mb-3">🎯 Seret elemen ke kotak [ ? ] di diagram!</p>
+         <svg viewbox="0 0 900 600" preserveaspectratio="xMidYMid meet" style="width: 100%; height: auto;"><!-- Curved arrow for composition formula --> <path d="M 140 370 Q 450 480 760 370" fill="none" stroke="#8b5cf6" stroke-width="3" stroke-dasharray="10,6" marker-end="url(#arrowhead-curved-kasus2)" /> <!-- Drop zone for formula (bottom curved arrow) --> <text id="drop-formula-kasus2" class="drop-zone-svg" data-group="kasus2" x="450" y="505" text-anchor="middle" font-size="22" font-weight="600" fill="#9ca3af" style="cursor: pointer;">
+           [ Letakkan formula di sini ]
+          </text> <!-- First arrow (A to B) --> <path d="M 210 260 Q 275 245 340 260" fill="none" stroke="#6366f1" stroke-width="3" marker-end="url(#arrowhead-kasus2)" /> <text x="275" y="235" text-anchor="middle" font-size="26" font-weight="600" fill="#1e3a8a">
+           g
+          </text> <!-- Second arrow (B to C) with drop zone --> <path d="M 510 260 Q 587 245 665 260" fill="none" stroke="#6366f1" stroke-width="3" marker-end="url(#arrowhead2-kasus2)" /> <text id="drop-panah-kasus2" class="drop-zone-svg" data-group="kasus2" x="587" y="245" text-anchor="middle" font-size="26" font-weight="600" fill="#9ca3af" style="cursor: pointer;">
+           [ ? ]
+          </text> <!-- Set A (red) --> <ellipse cx="140" cy="260" rx="70" ry="95" fill="none" stroke="#ef4444" stroke-width="3" /> <text x="140" y="130" text-anchor="middle" font-size="32" font-weight="600" fill="#1e3a8a">
+           A
+          </text> <text x="140" y="270" text-anchor="middle" font-size="28" font-style="italic" fill="#374151">
+           x
+          </text> <!-- Set B (blue) with drop zone --> <ellipse cx="425" cy="260" rx="85" ry="95" fill="none" stroke="#3b82f6" stroke-width="3" /> <text x="425" y="130" text-anchor="middle" font-size="32" font-weight="600" fill="#1e3a8a">
+           B
+          </text> <text id="drop-b-kasus2" class="drop-zone-svg" data-group="kasus2" x="425" y="270" text-anchor="middle" font-size="26" font-style="italic" fill="#9ca3af" style="cursor: pointer;">
+           [ ? ]
+          </text> <!-- Set C (green) with drop zone --> <ellipse cx="760" cy="260" rx="95" ry="95" fill="none" stroke="#10b981" stroke-width="3" /> <text x="760" y="130" text-anchor="middle" font-size="32" font-weight="600" fill="#1e3a8a">
+           C
+          </text> <text id="drop-c-kasus2" class="drop-zone-svg" data-group="kasus2" x="760" y="270" text-anchor="middle" font-size="28" font-style="italic" fill="#9ca3af" style="cursor: pointer;">
+           [ ? ]
+          </text> <!-- Arrow markers --> <defs>
+           <marker id="arrowhead-kasus2" markerwidth="10" markerheight="10" refx="9" refy="3" orient="auto">
+            <polygon points="0 0, 10 3, 0 6" fill="#6366f1" />
+           </marker>
+           <marker id="arrowhead2-kasus2" markerwidth="10" markerheight="10" refx="9" refy="3" orient="auto">
+            <polygon points="0 0, 10 3, 0 6" fill="#6366f1" />
+           </marker>
+           <marker id="arrowhead-curved-kasus2" markerwidth="10" markerheight="10" refx="9" refy="3" orient="auto">
+            <polygon points="0 0, 10 3, 0 6" fill="#8b5cf6" />
+           </marker>
+          </defs>
+         </svg>
+         <div class="mt-4 p-3 bg-blue-50 rounded-lg border-2 border-blue-200">
+          <p class="text-xs font-semibold text-blue-800 mb-2">📦 Bank Elemen - Seret ke diagram:</p>
+          <div class="flex flex-wrap gap-2">
+           <div class="drag-item px-3 py-2 bg-white border-2 border-blue-300 rounded-lg text-sm font-semibold hover:bg-blue-100 transition-all" draggable="true" data-value="g(x)" data-group="kasus2">
+            g(x)
+           </div>
+           <div class="drag-item px-3 py-2 bg-white border-2 border-blue-300 rounded-lg text-sm font-semibold hover:bg-blue-100 transition-all" draggable="true" data-value="f" data-group="kasus2">
+            f
+           </div>
+           <div class="drag-item px-3 py-2 bg-white border-2 border-blue-300 rounded-lg text-sm font-semibold hover:bg-blue-100 transition-all" draggable="true" data-value="f(g(x))" data-group="kasus2">
+            f(g(x))
+           </div>
+           <div class="drag-item px-3 py-2 bg-white border-2 border-blue-300 rounded-lg text-sm font-semibold hover:bg-blue-100 transition-all" draggable="true" data-value="(f ∘ g)(x) = f(g(x))" data-group="kasus2">
+            (f ∘ g)(x) = f(g(x))
+           </div>
+          </div><button id="reset-kasus2" class="mt-2 w-full bg-red-500 text-white px-3 py-2 rounded-lg text-xs font-semibold hover:bg-red-600 transition-all">🔄 Reset Diagram</button>
+         </div>
+        </div>
+        <div class="bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-blue-300 rounded-lg p-4 mt-4 mb-4">
+         <h3 class="font-bold text-base text-blue-800 mb-2 flex items-center"><span class="text-xl mr-2">🔍</span> AYO BEREKSPLORASI - Mencari Rumus Umum!</h3>
+         <p class="text-sm text-gray-800 leading-relaxed">Setelah mengamati diagram, sekarang temukan rumus umumnya! Tulis fungsi yang sesuai, tentukan apa yang ditanyakan, lalu substitusikan untuk menemukan rumus umum. <span class="font-semibold text-blue-700">Mari kita buktikan dengan rumus matematis! 💡</span></p>
+        </div>
+        <div class="bg-blue-50 border-2 border-blue-300 rounded-lg p-4">
+         <h3 class="font-bold text-base text-blue-800 mb-3">📝 KASUS 2: Mencari Rumus Umum</h3>
+         <div class="bg-white rounded-lg p-3 border border-blue-200 shadow-sm">
+          <div class="space-y-3">
+           <div class="mb-3">
+            <p class="text-sm font-bold text-gray-800 mb-2">📝 Diketahui:</p>
+            <div class="bg-blue-50 border-2 border-blue-200 rounded-lg p-3">
+             <div class="mb-2"><input type="text" id="kasus2-f-kotak1" class="input-field math-input kasus2-diketahui-input w-full px-3 py-2 text-sm border-2 border-blue-300 rounded-lg focus:border-blue-500 focus:outline-none" placeholder="f(x) = ...">
+             </div>
+             <div class="mb-3"><input type="text" id="kasus2-g-kotak1" class="input-field math-input kasus2-diketahui-input w-full px-3 py-2 text-sm border-2 border-blue-300 rounded-lg focus:border-blue-500 focus:outline-none" placeholder="g(x) = ...">
+             </div>
+             <div class="quick-math-symbols"><button type="button" class="quick-symbol-btn" data-symbol="(">(</button> <button type="button" class="quick-symbol-btn" data-symbol=")">)</button> <button type="button" class="quick-symbol-btn" data-symbol="=">=</button> <button type="button" class="quick-symbol-btn" data-symbol="−">−</button> <button type="button" class="quick-symbol-btn" data-symbol="+">+</button> <button type="button" class="quick-symbol-btn" data-symbol="∘">∘</button>
+             </div>
+            </div>
+           </div>
+           <div class="mb-3">
+            <p class="text-sm font-bold text-gray-800 mb-2">❓ Ditanya:</p>
+            <div class="bg-orange-50 border-2 border-orange-200 rounded-lg p-3"><input type="text" id="kasus2-ditanya-kotak1" class="input-field math-input kasus2-ditanya-input w-full px-3 py-2 text-sm border-2 border-orange-300 rounded-lg focus:border-orange-500 focus:outline-none" placeholder="Tuliskan yang ditanya...">
+             <div class="quick-math-symbols mt-2"><button type="button" class="quick-symbol-btn" data-symbol="(">(</button> <button type="button" class="quick-symbol-btn" data-symbol=")">)</button> <button type="button" class="quick-symbol-btn" data-symbol="=">=</button> <button type="button" class="quick-symbol-btn" data-symbol="g">g</button> <button type="button" class="quick-symbol-btn" data-symbol="f">f</button> <button type="button" class="quick-symbol-btn" data-symbol="∘">∘</button> <button type="button" class="quick-symbol-btn" data-symbol="x">x</button>
+             </div>
+            </div>
+           </div>
+            <p class="text-sm font-bold text-gray-800 mb-2">✍️ Jawab:</p>
+            <div class="bg-blue-50 border-2 border-blue-200 rounded-lg p-3 space-y-2">
+             <div class="flex items-center gap-2 flex-wrap"><span class="text-sm font-semibold text-gray-700">(f ∘ g)(x) =</span> <input type="text" id="kasus2-jawab-a1" class="input-field math-input px-3 py-2 text-sm border-2 border-blue-300 rounded-lg focus:border-blue-500 focus:outline-none" placeholder="..." style="width: 80px;"> <span class="text-sm text-gray-700">(</span> <input type="text" id="kasus2-jawab-a2" class="input-field math-input px-3 py-2 text-sm border-2 border-blue-300 rounded-lg focus:border-blue-500 focus:outline-none" placeholder="..." style="width: 80px;"> <span class="text-sm text-gray-700">(</span> <input type="text" id="kasus2-jawab-a3" class="input-field math-input px-3 py-2 text-sm border-2 border-blue-300 rounded-lg focus:border-blue-500 focus:outline-none" placeholder="..." style="width: 80px;"> <span class="text-sm text-gray-700">))</span>
+             </div>
+             <div class="flex items-center gap-2 flex-wrap"><span class="text-sm font-semibold text-gray-700 ml-8">=</span> <input type="text" id="kasus2-jawab-b1k1" class="input-field math-input px-3 py-2 text-sm border-2 border-blue-300 rounded-lg focus:border-blue-500 focus:outline-none" placeholder="..." style="width: 80px;"> <span class="text-sm text-gray-700">(</span> <input type="text" id="kasus2-jawab-b1k2" class="input-field math-input px-3 py-2 text-sm border-2 border-blue-300 rounded-lg focus:border-blue-500 focus:outline-none" placeholder="..." style="width: 130px;"> <span class="text-sm text-gray-700">)</span>
+             </div>
+             <div class="flex items-center gap-2 flex-wrap"><span class="text-sm font-semibold text-gray-700 ml-8">=</span> <input type="text" id="kasus2-jawab-b2k1" class="input-field math-input px-3 py-2 text-sm border-2 border-blue-300 rounded-lg focus:border-blue-500 focus:outline-none" placeholder="..." style="width: 200px;">
+             </div>
+             <div class="quick-math-symbols"><button type="button" class="quick-symbol-btn" data-symbol="(">(</button> <button type="button" class="quick-symbol-btn" data-symbol=")">)</button> <button type="button" class="quick-symbol-btn" data-symbol="=">=</button> <button type="button" class="quick-symbol-btn" data-symbol="−">−</button> <button type="button" class="quick-symbol-btn" data-symbol="+">+</button> <button type="button" class="quick-symbol-btn" data-symbol="×">×</button> <button type="button" class="quick-symbol-btn" data-symbol="x">x</button> <button type="button" class="quick-symbol-btn" data-symbol="g">g</button> <button type="button" class="quick-symbol-btn" data-symbol="f">f</button> <button type="button" class="quick-symbol-btn" data-symbol="0,9">0,9</button>
+             </div>
+            </div>
+           </div>
+           <div>
+            <div class="flex items-center gap-3 mb-2"><label for="kasus2-jadi" class="text-sm font-semibold text-gray-700 whitespace-nowrap">✅ Jadi,</label> <input type="text" id="kasus2-jadi" class="input-field math-input flex-1 px-3 py-2 text-sm border-2 border-green-400 rounded-lg focus:border-green-600 focus:outline-none bg-green-50" placeholder="rumus umumnya...">
+            </div>
+            <div class="quick-math-symbols"><button type="button" class="quick-symbol-btn" data-symbol="(">(</button> <button type="button" class="quick-symbol-btn" data-symbol=")">)</button> <button type="button" class="quick-symbol-btn" data-symbol="∘">∘</button> <button type="button" class="quick-symbol-btn" data-symbol="−">−</button> <button type="button" class="quick-symbol-btn" data-symbol="=">=</button> <button type="button" class="quick-symbol-btn" data-symbol="x">x</button>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div><!-- Perhitungan Harga Kasus 2 -->
+        <div class="bg-gradient-to-r from-green-50 to-teal-50 border-2 border-green-300 rounded-lg p-4 mt-4">
+         <h4 class="font-bold text-base text-green-800 mb-3 flex items-center"><span class="text-xl mr-2">🧮</span> PERHITUNGAN HARGA (x = Rp85.000)</h4>
+         <p class="text-xs text-gray-700 mb-3">Gunakan rumus yang sudah kalian temukan untuk menghitung harga akhir!</p>
+         <div class="bg-white rounded-lg p-4 border-2 border-blue-200">
+          <div class="space-y-4">
+           <div class="bg-blue-50 border-l-4 border-blue-400 p-3 rounded text-xs">
+            <p class="font-semibold text-blue-800 mb-1">💡 Panduan:</p>
+            <p class="text-blue-700">Isi setiap kotak dengan lengkap, ikuti pola perhitungan!</p>
+           </div>
+           <div class="bg-blue-50 border-2 border-blue-200 rounded-lg p-3">
+            <div class="flex items-center gap-2 flex-wrap"><span class="text-sm font-semibold text-gray-700">(f ∘ g)(x) =</span> <input type="text" id="hitung2-rumus-kotak1" class="input-field math-input px-2 py-1 text-sm border-2 border-blue-300 rounded focus:border-blue-500 focus:outline-none" placeholder="..." style="width: 70px;"> <span class="text-sm text-gray-700">(</span> <input type="text" id="hitung2-rumus-kotak2" class="input-field math-input px-2 py-1 text-sm border-2 border-blue-300 rounded focus:border-blue-500 focus:outline-none" placeholder="..." style="width: 70px;"> <span class="text-sm text-gray-700">) −</span> <input type="text" id="hitung2-rumus-kotak3" class="input-field math-input px-2 py-1 text-sm border-2 border-blue-300 rounded focus:border-blue-500 focus:outline-none" placeholder="..." style="width: 90px;">
+            </div>
+           </div>
+           <div class="bg-blue-50 border-2 border-blue-200 rounded-lg p-3">
+            <div class="flex items-center gap-2 flex-wrap"><span class="text-sm font-semibold text-gray-700">(f ∘ g)(85000) =</span> <input type="text" id="hitung2-baris1-kotak1" class="input-field math-input px-2 py-1 text-sm border-2 border-blue-300 rounded focus:border-blue-500 focus:outline-none" placeholder="..." style="width: 70px;"> <span class="text-sm text-gray-700">(</span> <input type="text" id="hitung2-baris1-kotak2" class="input-field math-input px-2 py-1 text-sm border-2 border-blue-300 rounded focus:border-blue-500 focus:outline-none" placeholder="..." style="width: 90px;"> <span class="text-sm text-gray-700">) −</span> <input type="text" id="hitung2-baris1-kotak3" class="input-field math-input px-2 py-1 text-sm border-2 border-blue-300 rounded focus:border-blue-500 focus:outline-none" placeholder="..." style="width: 90px;">
+            </div>
+           </div>
+           <div class="bg-blue-50 border-2 border-blue-200 rounded-lg p-3">
+            <div class="flex items-center gap-2 flex-wrap"><span class="text-sm font-semibold text-gray-700 ml-12">=</span> <input type="text" id="hitung2-baris2-kotak1" class="input-field math-input px-2 py-1 text-sm border-2 border-blue-300 rounded focus:border-blue-500 focus:outline-none" placeholder="..." style="width: 90px;"> <span class="text-sm text-gray-700">−</span> <input type="text" id="hitung2-baris2-kotak2" class="input-field math-input px-2 py-1 text-sm border-2 border-blue-300 rounded focus:border-blue-500 focus:outline-none" placeholder="..." style="width: 90px;">
+            </div>
+           </div>
+           <div class="bg-blue-50 border-2 border-blue-200 rounded-lg p-3">
+            <div class="flex items-center gap-2 flex-wrap"><span class="text-sm font-semibold text-gray-700 ml-12">=</span> <span class="text-sm text-gray-700">Rp</span> <input type="text" id="hitung2-baris3-hasil" class="input-field math-input px-3 py-2 text-sm border-2 border-blue-300 rounded-lg focus:border-blue-500 focus:outline-none" placeholder="..." style="width: 120px;">
+            </div>
+           </div>
+           <div class="bg-gradient-to-r from-green-100 to-emerald-100 border-2 border-green-500 rounded-lg p-3">
+            <div class="flex items-center gap-3 mb-2"><label for="hitung2-hasil" class="text-sm font-semibold text-gray-700 whitespace-nowrap">✅ Jadi,</label> <input type="text" id="hitung2-hasil" class="input-field math-input flex-1 px-3 py-2 text-base font-bold border-2 border-green-500 rounded-lg focus:border-green-600 focus:outline-none bg-white" placeholder="...">
+            </div>
+            <div class="quick-math-symbols"><button type="button" class="quick-symbol-btn" data-symbol="(">(</button> <button type="button" class="quick-symbol-btn" data-symbol=")">)</button> <button type="button" class="quick-symbol-btn" data-symbol="=">=</button> <button type="button" class="quick-symbol-btn" data-symbol="−">−</button> <button type="button" class="quick-symbol-btn" data-symbol="+">+</button> <button type="button" class="quick-symbol-btn" data-symbol="∘">∘</button>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+      </section><!-- Kesimpulan -->
+      <section class="section-card bg-white rounded-xl shadow-md p-6 mb-6 border-l-4 border-orange-500">
+       <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center"><span class="bg-orange-500 text-white rounded-full w-8 h-8 flex items-center justify-center mr-3">📌</span> KESIMPULAN</h2>
+       <div class="bg-yellow-50 border-2 border-yellow-400 rounded-lg p-4 mb-4">
+        <h4 class="font-bold text-base text-yellow-800 mb-3">🔍 Perbandingan Hasil</h4>
+        <div class="space-y-3">
+         <div class="input-with-symbols">
+          <div class="flex items-center gap-3 mb-2"><label for="perbandingan-lebih-murah" class="text-sm font-semibold text-gray-700 whitespace-nowrap">Mana yang lebih murah?</label> <input type="text" id="perbandingan-lebih-murah" class="input-field flex-1 px-3 py-2 text-sm border-2 border-yellow-300 rounded-lg focus:border-yellow-500 focus:outline-none" placeholder="...">
+          </div>
+         </div>
+         <div class="input-with-symbols">
+          <div class="mb-2"><label for="perbandingan-alasan" class="block text-sm font-semibold text-gray-700 mb-2">Mengapa ada perbedaan harga?</label> <textarea id="perbandingan-alasan" class="input-field w-full px-3 py-2 text-sm border-2 border-yellow-300 rounded-lg focus:border-yellow-500 focus:outline-none" rows="3" placeholder="..."></textarea>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="bg-gradient-to-r from-red-50 to-orange-50 border-2 border-red-400 rounded-lg p-4 mb-4">
+        <h3 class="font-bold text-base text-red-800 mb-3 flex items-center"><span class="text-2xl mr-2">💡</span> KESIMPULAN PENTING</h3>
+        <div class="space-y-4">
+         <div class="bg-white rounded-lg p-4 border-2 border-red-300">
+          <p class="text-sm text-gray-800 leading-relaxed mb-4">Berdasarkan penyelesaian persoalan di atas, ayo kita simpulkan bersama! 🔍</p><!-- Pertanyaan Pemandu 1 -->
+          <div class="bg-blue-50 border-2 border-blue-300 rounded-lg p-4 mb-4"><label class="block text-sm font-bold text-blue-800 mb-3">1️⃣ Apakah hasil (g ∘ f)(85000) sama dengan (f ∘ g)(85000)?</label>
+           <div class="space-y-2"><label class="flex items-center gap-3 p-3 bg-white rounded-lg border-2 border-gray-300 cursor-pointer hover:border-blue-500 transition-all"> <input type="radio" name="kesimpulan-q1" value="sama" class="w-5 h-5 text-blue-600"> <span class="text-sm text-gray-800">Ya, hasilnya sama</span> </label> <label class="flex items-center gap-3 p-3 bg-white rounded-lg border-2 border-gray-300 cursor-pointer hover:border-blue-500 transition-all"> <input type="radio" name="kesimpulan-q1" value="tidak-sama" class="w-5 h-5 text-blue-600"> <span class="text-sm text-gray-800">Tidak, hasilnya berbeda</span> </label>
+           </div>
+          </div><!-- Pertanyaan Pemandu 2 -->
+          <div class="bg-purple-50 border-2 border-purple-300 rounded-lg p-4 mb-4"><label class="block text-sm font-bold text-purple-800 mb-3">2️⃣ Apakah urutan penerapan fungsi (diskon → potongan VS potongan → diskon) mempengaruhi hasil akhir?</label>
+           <div class="space-y-2"><label class="flex items-center gap-3 p-3 bg-white rounded-lg border-2 border-gray-300 cursor-pointer hover:border-purple-500 transition-all"> <input type="radio" name="kesimpulan-q2" value="mempengaruhi" class="w-5 h-5 text-purple-600"> <span class="text-sm text-gray-800">Ya, urutan sangat mempengaruhi hasil</span> </label> <label class="flex items-center gap-3 p-3 bg-white rounded-lg border-2 border-gray-300 cursor-pointer hover:border-purple-500 transition-all"> <input type="radio" name="kesimpulan-q2" value="tidak-mempengaruhi" class="w-5 h-5 text-purple-600"> <span class="text-sm text-gray-800">Tidak, urutan tidak mempengaruhi</span> </label>
+           </div>
+          </div><!-- Pertanyaan Pemandu 3 -->
+          <div class="bg-orange-50 border-2 border-orange-300 rounded-lg p-4 mb-4"><label class="block text-sm font-bold text-orange-800 mb-3">3️⃣ Berdasarkan kedua jawaban di atas, bagaimana sifat komutatif pada komposisi fungsi?</label>
+           <div class="space-y-2"><label class="flex items-center gap-3 p-3 bg-white rounded-lg border-2 border-gray-300 cursor-pointer hover:border-orange-500 transition-all"> <input type="radio" name="kesimpulan-q3" value="komutatif" class="w-5 h-5 text-orange-600"> <span class="text-sm text-gray-800">Komposisi fungsi bersifat komutatif (hasil selalu sama)</span> </label> <label class="flex items-center gap-3 p-3 bg-white rounded-lg border-2 border-gray-300 cursor-pointer hover:border-orange-500 transition-all"> <input type="radio" name="kesimpulan-q3" value="tidak-komutatif" class="w-5 h-5 text-orange-600"> <span class="text-sm text-gray-800">Komposisi fungsi TIDAK bersifat komutatif (urutan penting)</span> </label>
+           </div>
+          </div><!-- Tombol Cek Kesimpulan --> <button id="btn-cek-kesimpulan" class="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white px-6 py-4 rounded-lg font-bold text-base transition-all transform hover:scale-105 active:scale-95 shadow-lg mb-4"> 🔍 Cek Kesimpulan Saya </button> <!-- Area Kesimpulan Final (Hidden by default) -->
+          <div id="kesimpulan-final" class="hidden">
+           <div id="kesimpulan-benar" class="hidden bg-gradient-to-r from-green-100 to-emerald-100 border-2 border-green-500 rounded-lg p-4 mb-4">
+            <div class="text-center mb-3">
+             <div class="text-5xl mb-2">
+              🎉
+             </div>
+             <h4 class="font-bold text-xl text-green-800">Sempurna! Kesimpulan Kalian Benar!</h4>
+            </div>
+            <div class="bg-white rounded-lg p-4 border-2 border-green-400 mb-3">
+             <p class="text-sm text-gray-800 leading-relaxed mb-3">Dari penyelesaian persoalan di atas, kita dapat membuktikan bahwa <span class="font-bold text-red-700">komposisi fungsi TIDAK bersifat komutatif</span>. Artinya:</p>
+             <div class="bg-red-100 rounded-lg p-3 text-center mb-3">
+              <p class="text-lg font-bold text-red-800">(g ∘ f)(x) ≠ (f ∘ g)(x)</p>
+             </div>
+             <p class="text-sm text-gray-700">Terbukti bahwa <span class="font-semibold">urutan penerapan fungsi sangat mempengaruhi hasil akhir</span>. Hal ini berbeda dengan operasi penjumlahan atau perkalian bilangan yang bersifat komutatif.</p>
+            </div>
+           </div>
+           <div id="kesimpulan-salah" class="hidden bg-gradient-to-r from-yellow-100 to-orange-100 border-2 border-yellow-500 rounded-lg p-4 mb-4">
+            <div class="text-center mb-3">
+             <div class="text-5xl mb-2">
+              🤔
+             </div>
+             <h4 class="font-bold text-xl text-orange-800">Hmm, Coba Periksa Lagi Jawabanmu!</h4>
+            </div>
+            <div class="bg-white rounded-lg p-4 border-2 border-orange-400">
+             <p class="text-sm text-gray-800 mb-3"><strong>💡 Petunjuk:</strong></p>
+             <ul class="list-disc list-inside space-y-2 text-sm text-gray-700">
+              <li>Bandingkan hasil perhitungan (g ∘ f)(85000) dan (f ∘ g)(85000) yang sudah kalian hitung</li>
+              <li>Apakah kedua hasilnya sama atau berbeda?</li>
+              <li>Jika berbeda, apa artinya tentang urutan fungsi?</li>
+             </ul>
+             <p class="text-sm text-gray-700 mt-3 font-semibold">Silakan perbaiki jawaban di atas dan klik tombol "Cek Kesimpulan Saya" lagi! 🔄</p>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="bg-gradient-to-r from-blue-50 to-cyan-50 border-2 border-blue-400 rounded-lg p-4 mb-4">
+        <h3 class="font-bold text-lg text-blue-800 mb-3 flex items-center"><span class="text-2xl mr-2">📐</span> Sifat-Sifat Komposisi Fungsi</h3>
+        <p class="text-sm text-gray-700 mb-4">Berikut ini sifat-sifat yang berlaku pada fungsi komposisi:</p>
+        <div class="space-y-3">
+         <div class="bg-white rounded-lg p-4 border-l-4 border-red-500 shadow-sm">
+          <div class="flex items-start gap-3"><span class="bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold text-sm flex-shrink-0 mt-1">1</span>
+           <div>
+            <p class="font-bold text-sm text-red-800 mb-2">Tidak Komutatif</p>
+            <p class="text-sm text-gray-700 mb-2">Secara umum sifat komutatif <strong>tidak berlaku</strong> pada fungsi komposisi, yaitu:</p>
+            <div class="bg-red-50 rounded-lg p-2 text-center">
+             <p class="font-mono text-sm font-semibold text-red-800">(f ∘ g)(x) ≠ (g ∘ f)(x)</p>
+            </div>
+           </div>
+          </div>
+         </div>
+         <div class="bg-white rounded-lg p-4 border-l-4 border-green-500 shadow-sm">
+          <div class="flex items-start gap-3"><span class="bg-green-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold text-sm flex-shrink-0 mt-1">2</span>
+           <div>
+            <p class="font-bold text-sm text-green-800 mb-2">Asosiatif</p>
+            <p class="text-sm text-gray-700 mb-2">Untuk komposisi tiga fungsi atau lebih, berlaku sifat asosiatif. Jika f, g, dan h tiga buah fungsi, maka berlaku:</p>
+            <div class="bg-green-50 rounded-lg p-2 text-center mb-2">
+             <p class="font-mono text-sm font-semibold text-green-800">(f ∘ (g ∘ h))(x) = ((f ∘ g) ∘ h)(x)</p>
+            </div>
+            <div class="bg-yellow-50 border-l-4 border-yellow-400 p-2 rounded">
+             <p class="text-xs text-yellow-800"><strong>📝 Catatan:</strong> Sifat asosiatif pada komposisi tiga fungsi akan dibahas lebih lanjut di pertemuan selanjutnya.</p>
+            </div>
+           </div>
+          </div>
+         </div>
+         <div class="bg-white rounded-lg p-4 border-l-4 border-purple-500 shadow-sm">
+          <div class="flex items-start gap-3"><span class="bg-purple-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold text-sm flex-shrink-0 mt-1">3</span>
+           <div class="w-full">
+            <p class="font-bold text-sm text-purple-800 mb-2">Fungsi Identitas</p>
+            <p class="text-sm text-gray-700 mb-2">Terdapat fungsi identitas terhadap operasi komposisi fungsi, yakni I(x) = x, sehingga berlaku:</p>
+            <div class="bg-purple-50 rounded-lg p-2 text-center mb-3">
+             <p class="font-mono text-sm font-semibold text-purple-800">(f ∘ I)(x) = (I ∘ f)(x) = f(x)</p>
+            </div>
+            <div class="bg-blue-50 border-l-4 border-blue-400 p-3 rounded mb-3">
+             <p class="text-xs text-blue-800 mb-2"><strong>💡 Penjelasan:</strong></p>
+             <ul class="list-disc list-inside space-y-1 text-xs text-blue-700 ml-2">
+              <li>Mengomposisikan fungsi apa pun dengan fungsi identitas <strong>tidak mengubah hasil</strong> fungsi tersebut</li>
+              <li>Fungsi identitas bertindak seperti <strong>angka 1 pada perkalian</strong> (misalnya: 5 × 1 = 1 × 5 = 5)</li>
+             </ul>
+            </div><!-- Pembuktian Interaktif -->
+            <div class="bg-gradient-to-r from-purple-50 to-pink-50 border-2 border-purple-300 rounded-lg p-4 mb-3">
+             <h4 class="font-bold text-sm text-purple-800 mb-3 flex items-center"><span class="text-lg mr-2">🔬</span> AYO BUKTIKAN! Pembuktian Fungsi Identitas</h4>
+             <p class="text-xs text-gray-700 mb-3">Lengkapi perhitungan berikut untuk membuktikan bahwa fungsi identitas tidak mengubah hasil!</p>
+             <div class="bg-white rounded-lg p-3 border-2 border-purple-200 mb-3">
+              <div class="bg-purple-50 border border-purple-300 rounded p-2 mb-3">
+               <p class="text-xs font-bold text-purple-800 mb-1">📝 Diketahui:</p>
+               <p class="text-xs text-gray-700 font-mono">f(x) = 2x + 3</p>
+               <p class="text-xs text-gray-700 font-mono">I(x) = x</p>
+              </div>
+              <div class="bg-orange-50 border border-orange-300 rounded p-2 mb-3">
+               <p class="text-xs font-bold text-orange-800 mb-1">❓ Ditanya:</p>
+               <p class="text-xs text-gray-700 font-mono">(f ∘ I)(x) dan (I ∘ f)(x)</p>
+              </div><!-- Pembuktian 1: (f ∘ I)(x) -->
+              <div class="bg-blue-50 border-l-4 border-blue-400 rounded-r-lg p-3 mb-3">
+               <p class="text-xs font-bold text-blue-900 mb-2">1️⃣ Buktikan: (f ∘ I)(x) = f(x)</p>
+               <div class="space-y-2">
+                <div class="flex items-center gap-2 flex-wrap"><span class="text-xs text-gray-700">(f ∘ I)(x) = f(</span> <input type="text" id="identitas-fi-1" class="input-field math-input px-2 py-1 text-xs border-2 border-blue-300 rounded focus:border-blue-500 focus:outline-none" placeholder="..." style="width: 60px;"> <span class="text-xs text-gray-700">(x))</span>
+                </div>
+                <div class="flex items-center gap-2 flex-wrap ml-10"><span class="text-xs text-gray-700">= f(</span> <input type="text" id="identitas-fi-2" class="input-field math-input px-2 py-1 text-xs border-2 border-blue-300 rounded focus:border-blue-500 focus:outline-none" placeholder="..." style="width: 50px;"> <span class="text-xs text-gray-700">)</span>
+                </div>
+                <div class="flex items-center gap-2 flex-wrap ml-10"><span class="text-xs text-gray-700">= 2(</span> <input type="text" id="identitas-fi-3" class="input-field math-input px-2 py-1 text-xs border-2 border-blue-300 rounded focus:border-blue-500 focus:outline-none" placeholder="..." style="width: 50px;"> <span class="text-xs text-gray-700">) + 3</span>
+                </div>
+                <div class="flex items-center gap-2 flex-wrap ml-10"><span class="text-xs text-gray-700">= </span> <input type="text" id="identitas-fi-4" class="input-field math-input px-2 py-1 text-xs border-2 border-green-400 rounded focus:border-green-500 focus:outline-none bg-green-50" placeholder="..." style="width: 90px;">
+                </div>
+                <div class="flex items-center gap-2 flex-wrap ml-10"><span class="text-xs text-gray-700">= </span> <input type="text" id="identitas-fi-5" class="input-field math-input px-2 py-1 text-xs border-2 border-green-400 rounded focus:border-green-500 focus:outline-none bg-green-50" placeholder="..." style="width: 90px;">
+                </div>
+               </div>
+              </div><!-- Pembuktian 2: (I ∘ f)(x) -->
+              <div class="bg-indigo-50 border-l-4 border-indigo-400 rounded-r-lg p-3 mb-3">
+               <p class="text-xs font-bold text-indigo-900 mb-2">2️⃣ Buktikan: (I ∘ f)(x) = f(x)</p>
+               <div class="space-y-2">
+                <div class="flex items-center gap-2 flex-wrap"><span class="text-xs text-gray-700">(I ∘ f)(x) = I(</span> <input type="text" id="identitas-if-1" class="input-field math-input px-2 py-1 text-xs border-2 border-indigo-300 rounded focus:border-indigo-500 focus:outline-none" placeholder="..." style="width: 60px;"> <span class="text-xs text-gray-700">(x))</span>
+                </div>
+                <div class="flex items-center gap-2 flex-wrap ml-10"><span class="text-xs text-gray-700">= I(</span> <input type="text" id="identitas-if-2" class="input-field math-input px-2 py-1 text-xs border-2 border-indigo-300 rounded focus:border-indigo-500 focus:outline-none" placeholder="..." style="width: 90px;"> <span class="text-xs text-gray-700">)</span>
+                </div>
+                <div class="flex items-center gap-2 flex-wrap ml-10"><span class="text-xs text-gray-700">= </span> <input type="text" id="identitas-if-3" class="input-field math-input px-2 py-1 text-xs border-2 border-green-400 rounded focus:border-green-500 focus:outline-none bg-green-50" placeholder="..." style="width: 90px;">
+                </div>
+                <div class="flex items-center gap-2 flex-wrap ml-10"><span class="text-xs text-gray-700">= </span> <input type="text" id="identitas-if-4" class="input-field math-input px-2 py-1 text-xs border-2 border-green-400 rounded focus:border-green-500 focus:outline-none bg-green-50" placeholder="..." style="width: 90px;">
+                </div>
+               </div>
+              </div>
+              <div class="quick-math-symbols mb-3"><button type="button" class="quick-symbol-btn" data-symbol="(">(</button> <button type="button" class="quick-symbol-btn" data-symbol=")">)</button> <button type="button" class="quick-symbol-btn" data-symbol="=">=</button> <button type="button" class="quick-symbol-btn" data-symbol="+">+</button> <button type="button" class="quick-symbol-btn" data-symbol="−">−</button> <button type="button" class="quick-symbol-btn" data-symbol="×">×</button> <button type="button" class="quick-symbol-btn" data-symbol="x">x</button> <button type="button" class="quick-symbol-btn" data-symbol="I">I</button> <button type="button" class="quick-symbol-btn" data-symbol="f">f</button> <button type="button" class="quick-symbol-btn" data-symbol="2">2</button> <button type="button" class="quick-symbol-btn" data-symbol="3">3</button>
+              </div><!-- Tombol Cek Pembuktian --> <button id="btn-cek-identitas" class="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-4 py-3 rounded-lg font-bold text-sm transition-all transform hover:scale-105 active:scale-95 shadow-lg"> 🔍 Cek Pembuktian Saya </button> <!-- Area Hasil Pembuktian -->
+              <div id="hasil-identitas" class="hidden mt-3">
+               <div id="identitas-benar" class="hidden bg-gradient-to-r from-green-100 to-emerald-100 border-2 border-green-500 rounded-lg p-3">
+                <div class="text-center mb-2">
+                 <div class="text-4xl mb-1">
+                  ✅
+                 </div>
+                 <h5 class="font-bold text-base text-green-800">Pembuktian Benar!</h5>
+                </div>
+                <div class="bg-white rounded-lg p-3 border-2 border-green-400">
+                 <p class="text-xs text-gray-800 leading-relaxed mb-2">Terbukti bahwa:</p>
+                 <div class="bg-green-50 rounded-lg p-2 text-center mb-2">
+                  <p class="text-xs font-bold text-green-800">(f ∘ I)(x) = (I ∘ f)(x) = f(x) = 2x + 3</p>
+                 </div>
+                 <p class="text-xs text-gray-700">Fungsi identitas <strong>tidak mengubah</strong> hasil fungsi f(x) dalam komposisi! 🎯</p>
+                </div>
+               </div>
+               <div id="identitas-salah" class="hidden bg-gradient-to-r from-yellow-100 to-orange-100 border-2 border-yellow-500 rounded-lg p-3">
+                <div class="text-center mb-2">
+                 <div class="text-4xl mb-1">
+                  🤔
+                 </div>
+                 <h5 class="font-bold text-base text-orange-800">Coba Periksa Lagi!</h5>
+                </div>
+                <div class="bg-white rounded-lg p-3 border-2 border-orange-400">
+                 <p class="text-xs text-gray-800 mb-2"><strong>💡 Petunjuk:</strong></p>
+                 <ul class="list-disc list-inside space-y-1 text-xs text-gray-700">
+                  <li>I(x) = x, jadi I(sesuatu) = sesuatu</li>
+                  <li>Substitusi hasil I(x) ke dalam fungsi berikutnya</li>
+                  <li>Sederhanakan hingga mendapat f(x)</li>
+                 </ul>
+                </div>
+               </div>
+              </div>
+             </div>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="bg-gradient-to-r from-blue-100 to-purple-100 border-l-4 border-blue-500 p-4 rounded-r-lg">
+        <p class="text-sm font-bold text-blue-900 mb-2">💡 Catatan Penting:</p>
+        <p class="text-sm text-blue-800">Dalam kehidupan sehari-hari, banyak situasi yang melibatkan komposisi fungsi, seperti perhitungan diskon bertingkat, konversi suhu, atau perhitungan bunga majemuk. Memahami urutan pengerjaan sangat penting untuk mendapatkan hasil yang tepat!</p>
+       </div>
+      </section><!-- Tombol Aksi -->
+      <div class="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-300 rounded-xl p-6 mb-6">
+       <div class="text-center mb-4">
+        <h3 class="text-xl font-bold text-green-800 mb-2 flex items-center justify-center gap-2"><span class="text-2xl">✅</span> Selesai Mengerjakan?</h3>
+        <p class="text-sm text-green-700">Pastikan semua jawaban sudah terisi dengan lengkap. Kalian masih bisa mengubah jawaban setelah dikumpulkan.</p>
+       </div><button id="btn-kumpulkan" class="w-full bg-white text-green-700 px-6 py-4 font-bold rounded-lg text-lg hover:bg-green-50 transition-all shadow-md border-2 border-green-300 hover:shadow-lg"> 📤 Kumpulkan </button>
+      </div><!-- Daftar Pustaka -->
+      <section class="section-card bg-white rounded-xl shadow-md p-6 mb-6 border-l-4 border-blue-500">
+       <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center"><span class="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center mr-3">📚</span> Daftar Pustaka</h2>
+       <div class="space-y-3 text-sm text-gray-700">
+        <p class="leading-relaxed">Akbar, H. F. (2023). <em>Modul ajar relasi dan fungsi kelas 11</em>. SMAN 19 Kab. Tangerang.</p>
+        <p class="leading-relaxed">Susanto, D., Sihombing, S. K., Radjawane, M. M., Candra, Y., &amp; Sinambela, D. (2021). <em>Matematika untuk SMA/SMK kelas XI</em>. Pusat Perbukuan, Badan Standar, Kurikulum, dan Asesmen Pendidikan, Kementerian Pendidikan, Kebudayaan, Riset, dan Teknologi.</p>
+        <p class="leading-relaxed">Sutisna, E. (2020). <em>Modul matematika umum kelas X KD 3.6: Fungsi komposisi dan fungsi invers</em>. Direktorat SMA, Direktorat Jenderal PAUD, DIKDAS dan DIKMEN.</p>
+        <p class="leading-relaxed">Tohir, M., As'ari, A. R., Anam, A. C., &amp; Taufiq, I. (2022). <em>Matematika untuk SMP/MTs kelas VIII</em>. Pusat Perbukuan, Badan Standar, Kurikulum, dan Asesmen Pendidikan, Kementerian Pendidikan, Kebudayaan, Riset, dan Teknologi.</p>
+        <p class="leading-relaxed">Zubaedah, S., &amp; Rahmayani, W. (2024). <em>Modul ajar fungsi: Domain, kodomain, range (Matematika kelas XI)</em>. SMA Negeri 1 Guntur.</p>
+       </div>
+      </section><!-- Footer -->
+      <div class="text-center text-gray-500 py-4 mb-6">
+       <p class="text-base font-bold">🌟 Selamat Mengerjakan!</p>
+       <p class="text-sm">Diskusikan dengan Teliti dan Kreatif 💡</p>
+       <p class="text-xs mt-1">LKM Matematika Fase F Kelas XI</p>
+      </div>
+     </div>
+    </div>
+   </main>
+  </div>
+  <script>
+    // DEFAULT CONFIG FOR ELEMENT SDK
+    const defaultConfig = {
+      judul_header: "Lembar Kerja Murid Pertemuan 2: Komposisi Fungsi",
+      subjudul_header: "Memahami Konsep Komposisi Fungsi dan Sifat-Sifatnya",
+      tahun_pelajaran_header: "Tahun Pelajaran 2025/2026",
+      penyusun_header: "Ratna Wahyuningtyas"
+    };
+
+    // ELEMENT SDK INTEGRATION
+    async function onConfigChange(config) {
+      document.getElementById('judul-header').textContent = config.judul_header || defaultConfig.judul_header;
+      document.getElementById('subjudul-header').textContent = config.subjudul_header || defaultConfig.subjudul_header;
+      document.getElementById('tahun-pelajaran-header').textContent = config.tahun_pelajaran_header || defaultConfig.tahun_pelajaran_header;
+      document.getElementById('penyusun-header').textContent = config.penyusun_header || defaultConfig.penyusun_header;
+    }
+
+    function mapToCapabilities(config) {
+      return {
+        recolorables: [],
+        borderables: [],
+        fontEditable: undefined,
+        fontSizeable: undefined
+      };
+    }
+
+    function mapToEditPanelValues(config) {
+      return new Map([
+        ['judul_header', config.judul_header || defaultConfig.judul_header],
+        ['subjudul_header', config.subjudul_header || defaultConfig.subjudul_header],
+        ['tahun_pelajaran_header', config.tahun_pelajaran_header || defaultConfig.tahun_pelajaran_header],
+        ['penyusun_header', config.penyusun_header || defaultConfig.penyusun_header]
+      ]);
+    }
+
+    // Initialize Element SDK
+    (async () => {
+      if (window.elementSdk) {
+        await window.elementSdk.init({
+          defaultConfig,
+          onConfigChange,
+          mapToCapabilities,
+          mapToEditPanelValues
+        });
+      }
+    })();
+
+    // STATE MANAGEMENT
+    let currentMode = 'siswa';
+    let allSubmissions = [];
+    let draggedElement = null;
+    let dataToDelete = null;
+    let currentViewingData = null;
+    let lastFocusedInput = null;
+
+    document.addEventListener('focusin', (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+        lastFocusedInput = e.target;
+      }
+    });
+
+    // DATA SDK INTEGRATION
+    const dataHandler = {
+      onDataChanged(data) {
+        allSubmissions = data || [];
+        if (currentMode === 'pengumpulan') {
+          renderDaftarKelompok();
+        }
+      }
+    };
+
+    // Initialize Data SDK
+    (async () => {
+      if (window.dataSdk) {
+        const result = await window.dataSdk.init(dataHandler);
+        if (!result.isOk) {
+          console.error('Failed to initialize Data SDK');
+        }
+      }
+    })();
+
+    // TOAST NOTIFICATION
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `toast bg-${type === 'success' ? 'green' : 'red'}-500 text-white px-6 py-3 rounded-lg shadow-lg`;
+      toast.textContent = message;
+      container.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
+    // IMPROVED DRAG AND DROP SYSTEM
+    function initializeDragAndDrop() {
+      const dragItems = document.querySelectorAll('.drag-item');
+      
+      // Setup drag items
+      dragItems.forEach(item => {
+        item.addEventListener('dragstart', function(e) {
+          draggedElement = this;
+          this.classList.add('dragging');
+          
+          const value = this.getAttribute('data-value');
+          const group = this.getAttribute('data-group');
+          
+          e.dataTransfer.effectAllowed = 'copy';
+          e.dataTransfer.setData('text/plain', value);
+          e.dataTransfer.setData('application/x-group', group);
+          
+          this.style.opacity = '0.5';
+        });
+        
+        item.addEventListener('dragend', function(e) {
+          this.classList.remove('dragging');
+          this.style.opacity = '1';
+          
+          setTimeout(() => {
+            draggedElement = null;
+          }, 100);
+          
+          document.querySelectorAll('.drop-hover').forEach(el => {
+            el.classList.remove('drop-hover');
+          });
+        });
+      });
+      
+      // Setup drop zones untuk setiap text element SVG
+      const textDropZones = document.querySelectorAll('.drop-zone-svg');
+      
+      textDropZones.forEach(textEl => {
+        const parent = textEl.closest('svg');
+        
+        // 1. Dragover pada text element langsung
+        textEl.addEventListener('dragover', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          
+          if (draggedElement) {
+            const draggedGroup = draggedElement.getAttribute('data-group');
+            const zoneGroup = this.getAttribute('data-group');
+            
+            if (draggedGroup === zoneGroup) {
+              this.classList.add('drop-hover');
+              e.dataTransfer.dropEffect = 'copy';
+            } else {
+              e.dataTransfer.dropEffect = 'none';
+            }
+          }
+        });
+        
+        // 2. Dragleave dari text element
+        textEl.addEventListener('dragleave', function(e) {
+          this.classList.remove('drop-hover');
+        });
+        
+        // 3. Drop pada text element langsung
+        textEl.addEventListener('drop', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          
+          if (!draggedElement) return;
+          
+          const value = draggedElement.getAttribute('data-value');
+          const draggedGroup = draggedElement.getAttribute('data-group');
+          const zoneGroup = this.getAttribute('data-group');
+          
+          this.classList.remove('drop-hover');
+          
+          if (draggedGroup === zoneGroup && value) {
+            this.textContent = value;
+            this.setAttribute('fill', '#1e3a8a');
+            this.setAttribute('font-weight', '700');
+            this.classList.add('success-animation');
+            
+            draggedElement.classList.add('selected');
+            
+            showToast('✅ Berhasil ditambahkan!', 'success');
+            
+            setTimeout(() => {
+              this.classList.remove('success-animation');
+            }, 500);
+          } else if (draggedGroup !== zoneGroup) {
+            showToast('⚠️ Seret ke grup yang sama!', 'error');
+          }
+        });
+        
+        // 4. Click sebagai alternatif (jika drag gagal)
+        textEl.addEventListener('click', function(e) {
+          if (draggedElement) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const value = draggedElement.getAttribute('data-value');
+            const draggedGroup = draggedElement.getAttribute('data-group');
+            const zoneGroup = this.getAttribute('data-group');
+            
+            if (draggedGroup === zoneGroup && value) {
+              this.textContent = value;
+              this.setAttribute('fill', '#1e3a8a');
+              this.setAttribute('font-weight', '700');
+              this.classList.add('success-animation');
+              this.classList.remove('drop-hover');
+              
+              draggedElement.classList.add('selected');
+              draggedElement.classList.remove('dragging');
+              draggedElement.style.opacity = '1';
+              
+              showToast('✅ Berhasil ditambahkan!', 'success');
+              
+              setTimeout(() => {
+                this.classList.remove('success-animation');
+              }, 500);
+              
+              draggedElement = null;
+            } else if (draggedGroup !== zoneGroup) {
+              showToast('⚠️ Seret ke grup yang sama!', 'error');
+            }
+          }
+        });
+      });
+      
+      // 5. Dragover dan drop pada parent SVG (sebagai fallback)
+      const svgContainers = document.querySelectorAll('svg');
+      
+      svgContainers.forEach(svg => {
+        svg.addEventListener('dragover', function(e) {
+          e.preventDefault();
+          e.dataTransfer.dropEffect = 'copy';
+        });
+        
+        svg.addEventListener('drop', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          
+          if (!draggedElement) return;
+          
+          // Dapatkan posisi mouse relatif terhadap SVG
+          const rect = svg.getBoundingClientRect();
+          const x = ((e.clientX - rect.left) / rect.width) * 900;
+          const y = ((e.clientY - rect.top) / rect.height) * 600;
+          
+          // Cari text element terdekat
+          const textElements = svg.querySelectorAll('.drop-zone-svg');
+          let closestElement = null;
+          let closestDistance = Infinity;
+          
+          textElements.forEach(textEl => {
+            const textX = parseFloat(textEl.getAttribute('x'));
+            const textY = parseFloat(textEl.getAttribute('y'));
+            
+            const distance = Math.sqrt(Math.pow(x - textX, 2) + Math.pow(y - textY, 2));
+            
+            if (distance < closestDistance && distance < 150) {
+              closestDistance = distance;
+              closestElement = textEl;
+            }
+          });
+          
+          if (closestElement) {
+            const value = draggedElement.getAttribute('data-value');
+            const draggedGroup = draggedElement.getAttribute('data-group');
+            const zoneGroup = closestElement.getAttribute('data-group');
+            
+            if (draggedGroup === zoneGroup && value) {
+              closestElement.textContent = value;
+              closestElement.setAttribute('fill', '#1e3a8a');
+              closestElement.setAttribute('font-weight', '700');
+              closestElement.classList.add('success-animation');
+              closestElement.classList.remove('drop-hover');
+              
+              draggedElement.classList.add('selected');
+              
+              showToast('✅ Berhasil ditambahkan!', 'success');
+              
+              setTimeout(() => {
+                closestElement.classList.remove('success-animation');
+              }, 500);
+            } else if (draggedGroup !== zoneGroup) {
+              showToast('⚠️ Seret ke grup yang sama!', 'error');
+            }
+          }
+          
+          document.querySelectorAll('.drop-hover').forEach(el => {
+            el.classList.remove('drop-hover');
+          });
+        });
+      });
+    }
+
+    // RESET DIAGRAM FUNCTION
+    function resetDiagram(kasus) {
+      const zones = document.querySelectorAll(`.drop-zone-svg[data-group="${kasus}"]`);
+      
+      zones.forEach(zone => {
+        const id = zone.getAttribute('id');
+        
+        if (id.includes('formula')) {
+          zone.textContent = '[ Letakkan formula di sini ]';
+        } else {
+          zone.textContent = '[ ? ]';
+        }
+        
+        zone.setAttribute('fill', '#9ca3af');
+        zone.classList.remove('drop-hover', 'success-animation');
+      });
+      
+      // Reset selected state pada drag items
+      const dragItems = document.querySelectorAll(`.drag-item[data-group="${kasus}"]`);
+      dragItems.forEach(item => {
+        item.classList.remove('selected');
+      });
+      
+      showToast('🔄 Diagram direset!', 'success');
+    }
+    
+    // Setup reset buttons
+    function setupResetButtons() {
+      const resetKasus1 = document.getElementById('reset-kasus1');
+      const resetKasus2 = document.getElementById('reset-kasus2');
+      
+      if (resetKasus1) {
+        resetKasus1.addEventListener('click', function(e) {
+          e.preventDefault();
+          resetDiagram('kasus1');
+        });
+      }
+      
+      if (resetKasus2) {
+        resetKasus2.addEventListener('click', function(e) {
+          e.preventDefault();
+          resetDiagram('kasus2');
+        });
+      }
+    }
+
+    // Initialize semua fungsi drag drop saat DOM ready
+    document.addEventListener('DOMContentLoaded', function() {
+      initializeDragAndDrop();
+      setupResetButtons();
+      attachSymbolButtonHandlers();
+    });
+
+    // SYMBOL BUTTON HANDLERS
+    function attachSymbolButtonHandlers() {
+      document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('quick-symbol-btn')) {
+          e.preventDefault();
+          e.stopPropagation();
+          
+          const symbol = e.target.getAttribute('data-symbol');
+          let targetInput = lastFocusedInput;
+          
+          if (!targetInput || (targetInput.tagName !== 'INPUT' && targetInput.tagName !== 'TEXTAREA')) {
+            targetInput = document.activeElement;
+          }
+          
+          if (!targetInput || (targetInput.tagName !== 'INPUT' && targetInput.tagName !== 'TEXTAREA')) {
+            const buttonRect = e.target.getBoundingClientRect();
+            const symbolContainer = e.target.closest('.quick-math-symbols');
+            
+            if (symbolContainer) {
+              const parentContainer = symbolContainer.closest('.bg-purple-50, .bg-blue-50, .bg-orange-50, .bg-green-50, .space-y-3, .space-y-4');
+              
+              if (parentContainer) {
+                const inputs = parentContainer.querySelectorAll('input[type="text"]:not([readonly]):not([disabled]), textarea:not([readonly]):not([disabled])');
+                
+                if (inputs.length > 0) {
+                  targetInput = inputs[inputs.length - 1];
+                }
+              }
+            }
+            
+            if (!targetInput || (targetInput.tagName !== 'INPUT' && targetInput.tagName !== 'TEXTAREA')) {
+              showToast('❌ Klik kotak input dulu!', 'error');
+              return;
+            }
+          }
+          
+          const cursorPos = targetInput.selectionStart !== undefined ? targetInput.selectionStart : targetInput.value.length;
+          const textBefore = targetInput.value.substring(0, cursorPos);
+          const textAfter = targetInput.value.substring(cursorPos);
+          targetInput.value = textBefore + symbol + textAfter;
+          
+          const newPos = cursorPos + symbol.length;
+          targetInput.focus();
+          if (targetInput.setSelectionRange) {
+            targetInput.setSelectionRange(newPos, newPos);
+          }
+          
+          lastFocusedInput = targetInput;
+          showToast(`✅ "${symbol}" ditambahkan!`, 'success');
+        }
+      });
+    }
+
+    // KUMPULKAN BUTTON
+    document.getElementById('btn-kumpulkan').addEventListener('click', async function() {
+      const kelas = document.getElementById('input-kelas').value.trim();
+      const kelompok = document.getElementById('input-kelompok').value.trim();
+      const anggota1 = document.getElementById('input-anggota-1').value.trim();
+
+      if (!kelas || !kelompok || !anggota1) {
+        showToast('Lengkapi identitas kelompok! ⚠️', 'error');
+        document.getElementById('input-kelas').classList.add('field-error');
+        document.getElementById('input-kelompok').classList.add('field-error');
+        document.getElementById('input-anggota-1').classList.add('field-error');
+        return;
+      }
+
+      document.querySelectorAll('.field-error').forEach(el => el.classList.remove('field-error'));
+
+      if (allSubmissions.length >= 999) {
+        showToast('Batas maksimum 999 data tercapai! ⚠️', 'error');
+        return;
+      }
+
+      const submissionData = {
+        kelas,
+        kelompok,
+        anggota1,
+        anggota2: document.getElementById('input-anggota-2').value.trim(),
+        anggota3: document.getElementById('input-anggota-3').value.trim(),
+        anggota4: document.getElementById('input-anggota-4').value.trim(),
+        anggota5: document.getElementById('input-anggota-5').value.trim(),
+        fungsi_f: document.getElementById('fungsi-f').value.trim(),
+        fungsi_g: document.getElementById('fungsi-g').value.trim(),
+        kasus1_f_kotak1: document.getElementById('kasus1-f-kotak1').value.trim(),
+        kasus1_g_kotak1: document.getElementById('kasus1-g-kotak1').value.trim(),
+        kasus1_ditanya: document.getElementById('kasus1-ditanya').value.trim(),
+        kasus1_jawab_a1: document.getElementById('kasus1-jawab-a1').value.trim(),
+        kasus1_jawab_a2: document.getElementById('kasus1-jawab-a2').value.trim(),
+        kasus1_jawab_b1k1: document.getElementById('kasus1-jawab-b1k1').value.trim(),
+        kasus1_jawab_b1k2: document.getElementById('kasus1-jawab-b1k2').value.trim(),
+        kasus1_jawab_b2k1: document.getElementById('kasus1-jawab-b2k1').value.trim(),
+        kasus1_jawab_b2k2: document.getElementById('kasus1-jawab-b2k2').value.trim(),
+        kasus1_jawab_b3k1: document.getElementById('kasus1-jawab-b3k1').value.trim(),
+        kasus1_jawab_b3k2: document.getElementById('kasus1-jawab-b3k2').value.trim(),
+        kasus1_jawab_b4k1: document.getElementById('kasus1-jawab-b4k1').value.trim(),
+        kasus1_jadi: document.getElementById('kasus1-jadi').value.trim(),
+        hitung1_rumus_kotak1: document.getElementById('hitung1-rumus-kotak1').value.trim(),
+        hitung1_rumus_kotak2: document.getElementById('hitung1-rumus-kotak2').value.trim(),
+        hitung1_rumus_kotak3: document.getElementById('hitung1-rumus-kotak3').value.trim(),
+        hitung1_baris1_kotak1: document.getElementById('hitung1-baris1-kotak1').value.trim(),
+        hitung1_baris1_kotak2: document.getElementById('hitung1-baris1-kotak2').value.trim(),
+        hitung1_baris1_kotak3: document.getElementById('hitung1-baris1-kotak3').value.trim(),
+        hitung1_baris2_kotak1: document.getElementById('hitung1-baris2-kotak1').value.trim(),
+        hitung1_baris2_kotak2: document.getElementById('hitung1-baris2-kotak2').value.trim(),
+        hitung1_baris3_hasil: document.getElementById('hitung1-baris3-hasil').value.trim(),
+        hitung1_hasil: document.getElementById('hitung1-hasil').value.trim(),
+        kasus2_f_kotak1: document.getElementById('kasus2-f-kotak1').value.trim(),
+        kasus2_g_kotak1: document.getElementById('kasus2-g-kotak1').value.trim(),
+        kasus2_ditanya_kotak1: document.getElementById('kasus2-ditanya-kotak1').value.trim(),
+        kasus2_jawab_b1k1: document.getElementById('kasus2-jawab-b1k1').value.trim(),
+        kasus2_jawab_b1k2: document.getElementById('kasus2-jawab-b1k2').value.trim(),
+        kasus2_jawab_b1k3: document.getElementById('kasus2-jawab-b1k3').value.trim(),
+        kasus2_jawab_b1k4: document.getElementById('kasus2-jawab-b1k4').value.trim(),
+        kasus2_jawab_b1k5: document.getElementById('kasus2-jawab-b1k5').value.trim(),
+        kasus2_jawab_b2k1: document.getElementById('kasus2-jawab-b2k1').value.trim(),
+        kasus2_jawab_b2k2: document.getElementById('kasus2-jawab-b2k2').value.trim(),
+        kasus2_jawab_b3k1: document.getElementById('kasus2-jawab-b3k1').value.trim(),
+        kasus2_jawab_b3k2: document.getElementById('kasus2-jawab-b3k2').value.trim(),
+        kasus2_jawab_b4k1: document.getElementById('kasus2-jawab-b4k1').value.trim(),
+        kasus2_jadi: document.getElementById('kasus2-jadi').value.trim(),
+        hitung2_rumus_kotak1: document.getElementById('hitung2-rumus-kotak1').value.trim(),
+        hitung2_rumus_kotak2: document.getElementById('hitung2-rumus-kotak2').value.trim(),
+        hitung2_rumus_kotak3: document.getElementById('hitung2-rumus-kotak3').value.trim(),
+        hitung2_baris1_kotak1: document.getElementById('hitung2-baris1-kotak1').value.trim(),
+        hitung2_baris1_kotak2: document.getElementById('hitung2-baris1-kotak2').value.trim(),
+        hitung2_baris1_kotak3: document.getElementById('hitung2-baris1-kotak3').value.trim(),
+        hitung2_baris2_kotak1: document.getElementById('hitung2-baris2-kotak1').value.trim(),
+        hitung2_baris2_kotak2: document.getElementById('hitung2-baris2-kotak2').value.trim(),
+        hitung2_baris3_hasil: document.getElementById('hitung2-baris3-hasil').value.trim(),
+        hitung2_hasil: document.getElementById('hitung2-hasil').value.trim(),
+        perbandingan_lebih_murah: document.getElementById('perbandingan-lebih-murah').value.trim(),
+        perbandingan_alasan: document.getElementById('perbandingan-alasan').value.trim(),
+        kesimpulan_q1: document.querySelector('input[name="kesimpulan-q1"]:checked')?.value || '',
+        kesimpulan_q2: document.querySelector('input[name="kesimpulan-q2"]:checked')?.value || '',
+        kesimpulan_q3: document.querySelector('input[name="kesimpulan-q3"]:checked')?.value || '',
+        identitas_fi_1: document.getElementById('identitas-fi-1').value.trim(),
+        identitas_fi_2: document.getElementById('identitas-fi-2').value.trim(),
+        identitas_fi_3: document.getElementById('identitas-fi-3').value.trim(),
+        identitas_fi_4: document.getElementById('identitas-fi-4').value.trim(),
+        identitas_fi_5: document.getElementById('identitas-fi-5').value.trim(),
+        identitas_if_1: document.getElementById('identitas-if-1').value.trim(),
+        identitas_if_2: document.getElementById('identitas-if-2').value.trim(),
+        identitas_if_3: document.getElementById('identitas-if-3').value.trim(),
+        identitas_if_4: document.getElementById('identitas-if-4').value.trim(),
+        diagram_kasus1_b: document.getElementById('drop-b-kasus1').textContent,
+        diagram_kasus1_c: document.getElementById('drop-c-kasus1').textContent,
+        diagram_kasus1_panah: document.getElementById('drop-panah-kasus1').textContent,
+        diagram_kasus1_formula: document.getElementById('drop-formula-kasus1').textContent,
+        diagram_kasus2_b: document.getElementById('drop-b-kasus2').textContent,
+        diagram_kasus2_c: document.getElementById('drop-c-kasus2').textContent,
+        diagram_kasus2_panah: document.getElementById('drop-panah-kasus2').textContent,
+        diagram_kasus2_formula: document.getElementById('drop-formula-kasus2').textContent,
+        waktu_dikumpulkan: new Date().toISOString()
+      };
+
+      if (window.dataSdk) {
+        this.disabled = true;
+        this.innerHTML = '⏳ Mengumpulkan...';
+        
+        const result = await window.dataSdk.create(submissionData);
+        
+        this.disabled = false;
+        this.innerHTML = '📤 Kumpulkan';
+        
+        if (result.isOk) {
+          showToast('LKM berhasil dikumpulkan! 🎉', 'success');
+          
+          const statusDiv = document.getElementById('status-dikumpulkan');
+          statusDiv.classList.remove('hidden');
+          document.getElementById('waktu-dikumpulkan').textContent = new Date().toLocaleString('id-ID');
+          
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+          showToast('Gagal mengumpulkan! ❌', 'error');
+        }
+      }
+    });
+
+    // CEK KESIMPULAN
+    document.getElementById('btn-cek-kesimpulan').addEventListener('click', function() {
+      const q1 = document.querySelector('input[name="kesimpulan-q1"]:checked')?.value;
+      const q2 = document.querySelector('input[name="kesimpulan-q2"]:checked')?.value;
+      const q3 = document.querySelector('input[name="kesimpulan-q3"]:checked')?.value;
+
+      if (!q1 || !q2 || !q3) {
+        showToast('Lengkapi semua pertanyaan! ⚠️', 'error');
+        return;
+      }
+
+      const kesimpulanFinal = document.getElementById('kesimpulan-final');
+      const kesimpulanBenar = document.getElementById('kesimpulan-benar');
+      const kesimpulanSalah = document.getElementById('kesimpulan-salah');
+
+      if (q1 === 'tidak-sama' && q2 === 'mempengaruhi' && q3 === 'tidak-komutatif') {
+        kesimpulanFinal.classList.remove('hidden');
+        kesimpulanBenar.classList.remove('hidden');
+        kesimpulanSalah.classList.add('hidden');
+        showToast('Kesimpulan benar! 🎉', 'success');
+        
+        setTimeout(() => {
+          kesimpulanBenar.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 300);
+      } else {
+        kesimpulanFinal.classList.remove('hidden');
+        kesimpulanBenar.classList.add('hidden');
+        kesimpulanSalah.classList.remove('hidden');
+        showToast('Periksa kembali! 🤔', 'error');
+        
+        setTimeout(() => {
+          kesimpulanSalah.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 300);
+      }
+    });
+
+    // CEK IDENTITAS
+    document.getElementById('btn-cek-identitas').addEventListener('click', function() {
+      const fi1 = document.getElementById('identitas-fi-1').value.trim().toLowerCase();
+      const fi2 = document.getElementById('identitas-fi-2').value.trim().toLowerCase();
+      const fi3 = document.getElementById('identitas-fi-3').value.trim().toLowerCase();
+      const fi4 = document.getElementById('identitas-fi-4').value.trim().toLowerCase();
+      const fi5 = document.getElementById('identitas-fi-5').value.trim().toLowerCase();
+      
+      const if1 = document.getElementById('identitas-if-1').value.trim().toLowerCase();
+      const if2 = document.getElementById('identitas-if-2').value.trim().toLowerCase();
+      const if3 = document.getElementById('identitas-if-3').value.trim().toLowerCase();
+      const if4 = document.getElementById('identitas-if-4').value.trim().toLowerCase();
+
+      if (!fi1 || !fi2 || !fi3 || !fi4 || !fi5 || !if1 || !if2 || !if3 || !if4) {
+        showToast('Lengkapi semua kotak! ⚠️', 'error');
+        return;
+      }
+
+      const hasilDiv = document.getElementById('hasil-identitas');
+      const benarDiv = document.getElementById('identitas-benar');
+      const salahDiv = document.getElementById('identitas-salah');
+
+      const check1 = fi1.includes('i');
+      const check2 = fi2 === 'x' || fi2.includes('x');
+      const check3 = fi3 === 'x' || fi3.includes('x');
+      const check4 = (fi4.includes('2x') && fi4.includes('3')) || fi4.includes('2x+3');
+      const check5 = fi5.includes('f') && (fi5.includes('x') || fi5.includes('(x)'));
+      
+      const check6 = if1.includes('f');
+      const check7 = (if2.includes('2x') && if2.includes('3')) || if2.includes('2x+3');
+      const check8 = (if3.includes('2x') && if3.includes('3')) || if3.includes('2x+3');
+      const check9 = if4.includes('f') && (if4.includes('x') || if4.includes('(x)'));
+
+      if (check1 && check2 && check3 && check4 && check5 && check6 && check7 && check8 && check9) {
+        hasilDiv.classList.remove('hidden');
+        benarDiv.classList.remove('hidden');
+        salahDiv.classList.add('hidden');
+        showToast('Pembuktian benar! 🎉', 'success');
+        
+        setTimeout(() => {
+          benarDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 300);
+      } else {
+        hasilDiv.classList.remove('hidden');
+        benarDiv.classList.add('hidden');
+        salahDiv.classList.remove('hidden');
+        showToast('Periksa kembali! 🤔', 'error');
+        
+        setTimeout(() => {
+          salahDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 300);
+      }
+    });
+
+    // MODAL HANDLERS
+    document.getElementById('input-kode-hapus').addEventListener('input', function() {
+      const kode = this.value.trim();
+      const btnKonfirmasi = document.getElementById('btn-konfirmasi-hapus');
+      
+      if (kode === 'guru8899') {
+        btnKonfirmasi.disabled = false;
+        btnKonfirmasi.classList.remove('opacity-50');
+        this.classList.remove('password-error');
+        this.classList.add('border-green-500');
+      } else {
+        btnKonfirmasi.disabled = true;
+        btnKonfirmasi.classList.add('opacity-50');
+        this.classList.remove('border-green-500');
+        if (kode.length > 0) {
+          this.classList.add('password-error');
+        }
+      }
+    });
+
+    document.getElementById('btn-batal-hapus').addEventListener('click', function() {
+      document.getElementById('modal-verifikasi-hapus').classList.add('hidden');
+      document.getElementById('input-kode-hapus').value = '';
+      document.getElementById('input-kode-hapus').classList.remove('password-error', 'border-green-500');
+      dataToDelete = null;
+    });
+
+    document.getElementById('btn-konfirmasi-hapus').addEventListener('click', async function() {
+      if (!dataToDelete || this.disabled) return;
+      
+      this.disabled = true;
+      this.innerHTML = '⏳ Menghapus...';
+      
+      if (window.dataSdk) {
+        const result = await window.dataSdk.delete(dataToDelete);
+        
+        this.disabled = false;
+        this.innerHTML = '🗑️ Hapus';
+        
+        if (result.isOk) {
+          showToast('Data dihapus! 🗑️', 'success');
+          document.getElementById('modal-verifikasi-hapus').classList.add('hidden');
+          document.getElementById('input-kode-hapus').value = '';
+          document.getElementById('input-kode-hapus').classList.remove('password-error', 'border-green-500');
+          dataToDelete = null;
+        } else {
+          showToast('Gagal menghapus! ❌', 'error');
+        }
+      }
+    });
+
+    // MODE TOGGLE
+    document.getElementById('btn-toggle-mode').addEventListener('click', function() {
+      if (currentViewingData) {
+        currentViewingData = null;
+        clearForm();
+        document.getElementById('status-dikumpulkan').classList.add('hidden');
+        currentMode = 'pengumpulan';
+        document.getElementById('mode-siswa-container').classList.add('hidden');
+        document.getElementById('mode-pengumpulan-container').classList.remove('hidden');
+        this.textContent = '👁️ Lihat Pengumpulan';
+        this.classList.add('hidden');
+        renderDaftarKelompok();
+      } else {
+        currentMode = 'pengumpulan';
+        document.getElementById('mode-siswa-container').classList.add('hidden');
+        document.getElementById('mode-pengumpulan-container').classList.remove('hidden');
+        this.classList.add('hidden');
+        renderDaftarKelompok();
+      }
+    });
+
+    document.getElementById('btn-kembali-ke-lkm').addEventListener('click', function() {
+      currentMode = 'siswa';
+      currentViewingData = null;
+      clearForm();
+      document.getElementById('status-dikumpulkan').classList.add('hidden');
+      document.getElementById('mode-pengumpulan-container').classList.add('hidden');
+      document.getElementById('mode-siswa-container').classList.remove('hidden');
+      document.getElementById('btn-toggle-mode').classList.remove('hidden');
+      document.getElementById('btn-toggle-mode').textContent = '👁️ Lihat Pengumpulan';
+    });
+
+    document.getElementById('filter-kelas').addEventListener('change', function() {
+      renderDaftarKelompok();
+    });
+
+    // RENDER DAFTAR KELOMPOK
+    function renderDaftarKelompok() {
+      const container = document.getElementById('daftar-kelompok');
+      const emptyState = document.getElementById('empty-state');
+      const filterKelas = document.getElementById('filter-kelas');
+      
+      if (allSubmissions.length === 0) {
+        container.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        document.getElementById('total-dikumpulkan').textContent = '0';
+        document.getElementById('total-kelompok').textContent = '0';
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+      
+      const kelasSet = new Set(allSubmissions.map(s => s.kelas));
+      filterKelas.innerHTML = '<option value="">Semua Kelas</option>';
+      kelasSet.forEach(kelas => {
+        const option = document.createElement('option');
+        option.value = kelas;
+        option.textContent = kelas;
+        filterKelas.appendChild(option);
+      });
+
+      const selectedKelas = filterKelas.value;
+      const filtered = selectedKelas ? allSubmissions.filter(s => s.kelas === selectedKelas) : allSubmissions;
+
+      document.getElementById('total-dikumpulkan').textContent = filtered.length;
+      document.getElementById('total-kelompok').textContent = allSubmissions.length;
+
+      container.innerHTML = filtered.map((data, index) => {
+        const waktu = data.waktu_dikumpulkan ? new Date(data.waktu_dikumpulkan).toLocaleString('id-ID') : '-';
+        
+        return `
+          <div class="kelompok-item bg-green-50 border-green-300 border-2 rounded-lg p-4 hover:shadow-md transition-all" data-index="${allSubmissions.indexOf(data)}">
+            <div class="flex items-center justify-between">
+              <div class="flex-1">
+                <h3 class="text-lg font-bold text-gray-800 mb-1">${data.kelompok} - ${data.kelas}</h3>
+                <p class="text-sm text-gray-600 mb-2">👥 ${data.anggota1}</p>
+                <p class="text-xs text-green-700">⏰ ${waktu}</p>
+              </div>
+              <div class="flex gap-2">
+                <button class="btn-lihat bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600 transition-all">
+                  👁️ Lihat
+                </button>
+                <button class="btn-hapus bg-red-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-600 transition-all">
+                  🗑️ Hapus
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Attach event listeners
+      container.querySelectorAll('.btn-lihat').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const item = this.closest('.kelompok-item');
+          const dataIndex = parseInt(item.getAttribute('data-index'));
+          viewSubmission(allSubmissions[dataIndex]);
+        });
+      });
+
+      container.querySelectorAll('.btn-hapus').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const item = this.closest('.kelompok-item');
+          const dataIndex = parseInt(item.getAttribute('data-index'));
+          const data = allSubmissions[dataIndex];
+          
+          dataToDelete = data;
+          document.getElementById('hapus-kelompok-nama').textContent = `${data.kelompok} - ${data.kelas}`;
+          document.getElementById('modal-verifikasi-hapus').classList.remove('hidden');
+        });
+      });
+    }
+
+    // VIEW SUBMISSION
+    function viewSubmission(data) {
+      currentViewingData = data;
+      
+      // Fill all form fields
+      document.getElementById('input-kelas').value = data.kelas || '';
+      document.getElementById('input-kelompok').value = data.kelompok || '';
+      document.getElementById('input-anggota-1').value = data.anggota1 || '';
+      document.getElementById('input-anggota-2').value = data.anggota2 || '';
+      document.getElementById('input-anggota-3').value = data.anggota3 || '';
+      document.getElementById('input-anggota-4').value = data.anggota4 || '';
+      document.getElementById('input-anggota-5').value = data.anggota5 || '';
+      
+      document.getElementById('fungsi-f').value = data.fungsi_f || '';
+      document.getElementById('fungsi-g').value = data.fungsi_g || '';
+      
+      // Kasus 1
+      document.getElementById('kasus1-f-kotak1').value = data.kasus1_f_kotak1 || '';
+      document.getElementById('kasus1-g-kotak1').value = data.kasus1_g_kotak1 || '';
+      document.getElementById('kasus1-ditanya').value = data.kasus1_ditanya || '';
+      document.getElementById('kasus1-jawab-a1').value = data.kasus1_jawab_a1 || '';
+      document.getElementById('kasus1-jawab-a2').value = data.kasus1_jawab_a2 || '';
+      document.getElementById('kasus1-jawab-b1k1').value = data.kasus1_jawab_b1k1 || '';
+      document.getElementById('kasus1-jawab-b1k2').value = data.kasus1_jawab_b1k2 || '';
+      document.getElementById('kasus1-jawab-b2k1').value = data.kasus1_jawab_b2k1 || '';
+      document.getElementById('kasus1-jawab-b2k2').value = data.kasus1_jawab_b2k2 || '';
+      document.getElementById('kasus1-jawab-b3k1').value = data.kasus1_jawab_b3k1 || '';
+      document.getElementById('kasus1-jawab-b3k2').value = data.kasus1_jawab_b3k2 || '';
+      document.getElementById('kasus1-jawab-b4k1').value = data.kasus1_jawab_b4k1 || '';
+      document.getElementById('kasus1-jadi').value = data.kasus1_jadi || '';
+      
+      // Perhitungan 1
+      document.getElementById('hitung1-rumus-kotak1').value = data.hitung1_rumus_kotak1 || '';
+      document.getElementById('hitung1-rumus-kotak2').value = data.hitung1_rumus_kotak2 || '';
+      document.getElementById('hitung1-rumus-kotak3').value = data.hitung1_rumus_kotak3 || '';
+      document.getElementById('hitung1-baris1-kotak1').value = data.hitung1_baris1_kotak1 || '';
+      document.getElementById('hitung1-baris1-kotak2').value = data.hitung1_baris1_kotak2 || '';
+      document.getElementById('hitung1-baris1-kotak3').value = data.hitung1_baris1_kotak3 || '';
+      document.getElementById('hitung1-baris2-kotak1').value = data.hitung1_baris2_kotak1 || '';
+      document.getElementById('hitung1-baris2-kotak2').value = data.hitung1_baris2_kotak2 || '';
+      document.getElementById('hitung1-baris3-hasil').value = data.hitung1_baris3_hasil || '';
+      document.getElementById('hitung1-hasil').value = data.hitung1_hasil || '';
+      
+      // Kasus 2
+      document.getElementById('kasus2-f-kotak1').value = data.kasus2_f_kotak1 || '';
+      document.getElementById('kasus2-g-kotak1').value = data.kasus2_g_kotak1 || '';
+      document.getElementById('kasus2-ditanya-kotak1').value = data.kasus2_ditanya_kotak1 || '';
+      document.getElementById('kasus2-jawab-b1k1').value = data.kasus2_jawab_b1k1 || '';
+      document.getElementById('kasus2-jawab-b1k2').value = data.kasus2_jawab_b1k2 || '';
+      document.getElementById('kasus2-jawab-b1k3').value = data.kasus2_jawab_b1k3 || '';
+      document.getElementById('kasus2-jawab-b1k4').value = data.kasus2_jawab_b1k4 || '';
+      document.getElementById('kasus2-jawab-b1k5').value = data.kasus2_jawab_b1k5 || '';
+      document.getElementById('kasus2-jawab-b2k1').value = data.kasus2_jawab_b2k1 || '';
+      document.getElementById('kasus2-jawab-b2k2').value = data.kasus2_jawab_b2k2 || '';
+      document.getElementById('kasus2-jawab-b3k1').value = data.kasus2_jawab_b3k1 || '';
+      document.getElementById('kasus2-jawab-b3k2').value = data.kasus2_jawab_b3k2 || '';
+      document.getElementById('kasus2-jawab-b4k1').value = data.kasus2_jawab_b4k1 || '';
+      document.getElementById('kasus2-jadi').value = data.kasus2_jadi || '';
+      
+      // Perhitungan 2
+      document.getElementById('hitung2-rumus-kotak1').value = data.hitung2_rumus_kotak1 || '';
+      document.getElementById('hitung2-rumus-kotak2').value = data.hitung2_rumus_kotak2 || '';
+      document.getElementById('hitung2-rumus-kotak3').value = data.hitung2_rumus_kotak3 || '';
+      document.getElementById('hitung2-baris1-kotak1').value = data.hitung2_baris1_kotak1 || '';
+      document.getElementById('hitung2-baris1-kotak2').value = data.hitung2_baris1_kotak2 || '';
+      document.getElementById('hitung2-baris1-kotak3').value = data.hitung2_baris1_kotak3 || '';
+      document.getElementById('hitung2-baris2-kotak1').value = data.hitung2_baris2_kotak1 || '';
+      document.getElementById('hitung2-baris2-kotak2').value = data.hitung2_baris2_kotak2 || '';
+      document.getElementById('hitung2-baris3-hasil').value = data.hitung2_baris3_hasil || '';
+      document.getElementById('hitung2-hasil').value = data.hitung2_hasil || '';
+      
+      // Kesimpulan
+      document.getElementById('perbandingan-lebih-murah').value = data.perbandingan_lebih_murah || '';
+      document.getElementById('perbandingan-alasan').value = data.perbandingan_alasan || '';
+      
+      if (data.kesimpulan_q1) {
+        const radio1 = document.querySelector(`input[name="kesimpulan-q1"][value="${data.kesimpulan_q1}"]`);
+        if (radio1) radio1.checked = true;
+      }
+      if (data.kesimpulan_q2) {
+        const radio2 = document.querySelector(`input[name="kesimpulan-q2"][value="${data.kesimpulan_q2}"]`);
+        if (radio2) radio2.checked = true;
+      }
+      if (data.kesimpulan_q3) {
+        const radio3 = document.querySelector(`input[name="kesimpulan-q3"][value="${data.kesimpulan_q3}"]`);
+        if (radio3) radio3.checked = true;
+      }
+      
+      // Identitas
+      document.getElementById('identitas-fi-1').value = data.identitas_fi_1 || '';
+      document.getElementById('identitas-fi-2').value = data.identitas_fi_2 || '';
+      document.getElementById('identitas-fi-3').value = data.identitas_fi_3 || '';
+      document.getElementById('identitas-fi-4').value = data.identitas_fi_4 || '';
+      document.getElementById('identitas-fi-5').value = data.identitas_fi_5 || '';
+      document.getElementById('identitas-if-1').value = data.identitas_if_1 || '';
+      document.getElementById('identitas-if-2').value = data.identitas_if_2 || '';
+      document.getElementById('identitas-if-3').value = data.identitas_if_3 || '';
+      document.getElementById('identitas-if-4').value = data.identitas_if_4 || '';
+      
+      // Diagram Kasus 1
+      if (data.diagram_kasus1_b && !data.diagram_kasus1_b.includes('?')) {
+        document.getElementById('drop-b-kasus1').textContent = data.diagram_kasus1_b;
+        document.getElementById('drop-b-kasus1').setAttribute('fill', '#1e3a8a');
+      }
+      if (data.diagram_kasus1_c && !data.diagram_kasus1_c.includes('?')) {
+        document.getElementById('drop-c-kasus1').textContent = data.diagram_kasus1_c;
+        document.getElementById('drop-c-kasus1').setAttribute('fill', '#1e3a8a');
+      }
+      if (data.diagram_kasus1_panah && !data.diagram_kasus1_panah.includes('?')) {
+        document.getElementById('drop-panah-kasus1').textContent = data.diagram_kasus1_panah;
+        document.getElementById('drop-panah-kasus1').setAttribute('fill', '#1e3a8a');
+      }
+      if (data.diagram_kasus1_formula && !data.diagram_kasus1_formula.includes('Letakkan')) {
+        document.getElementById('drop-formula-kasus1').textContent = data.diagram_kasus1_formula;
+        document.getElementById('drop-formula-kasus1').setAttribute('fill', '#1e3a8a');
+      }
+      
+      // Diagram Kasus 2
+      if (data.diagram_kasus2_b && !data.diagram_kasus2_b.includes('?')) {
+        document.getElementById('drop-b-kasus2').textContent = data.diagram_kasus2_b;
+        document.getElementById('drop-b-kasus2').setAttribute('fill', '#1e3a8a');
+      }
+      if (data.diagram_kasus2_c && !data.diagram_kasus2_c.includes('?')) {
+        document.getElementById('drop-c-kasus2').textContent = data.diagram_kasus2_c;
+        document.getElementById('drop-c-kasus2').setAttribute('fill', '#1e3a8a');
+      }
+      if (data.diagram_kasus2_panah && !data.diagram_kasus2_panah.includes('?')) {
+        document.getElementById('drop-panah-kasus2').textContent = data.diagram_kasus2_panah;
+        document.getElementById('drop-panah-kasus2').setAttribute('fill', '#1e3a8a');
+      }
+      if (data.diagram_kasus2_formula && !data.diagram_kasus2_formula.includes('Letakkan')) {
+        document.getElementById('drop-formula-kasus2').textContent = data.diagram_kasus2_formula;
+        document.getElementById('drop-formula-kasus2').setAttribute('fill', '#1e3a8a');
+      }
+      
+      // Show status and switch mode
+      const statusDiv = document.getElementById('status-dikumpulkan');
+      statusDiv.classList.remove('hidden');
+      document.getElementById('waktu-dikumpulkan').textContent = data.waktu_dikumpulkan 
+        ? new Date(data.waktu_dikumpulkan).toLocaleString('id-ID') 
+        : '-';
+      document.getElementById('status-viewing-message').textContent = 'Data ini dikumpulkan oleh kelompok';
+      
+      currentMode = 'siswa';
+      document.getElementById('mode-pengumpulan-container').classList.add('hidden');
+      document.getElementById('mode-siswa-container').classList.remove('hidden');
+      document.getElementById('btn-toggle-mode').classList.remove('hidden');
+      document.getElementById('btn-toggle-mode').textContent = '◀️ Kembali ke Daftar';
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    
+    // CLEAR FORM
+    function clearForm() {
+      document.querySelectorAll('input[type="text"], textarea').forEach(input => {
+        input.value = '';
+      });
+      document.querySelectorAll('input[type="radio"]').forEach(radio => {
+        radio.checked = false;
+      });
+      
+      // Reset diagram
+      resetDiagram('kasus1');
+      resetDiagram('kasus2');
+    }
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9bc1939c10f0fde0',t:'MTc2ODEwNDc1NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
